@@ -4,3 +4,4 @@
 
 Math library for vector/matrices and quaternion calculations
 
+vm is written in C89
