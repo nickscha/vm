@@ -213,8 +213,10 @@ extern mat4 vm_mat4_identity() {
 
 extern mat4 vm_mat4_mul(mat4 a, mat4 b) {
     mat4 res = {};
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
+    int i = 0;
+    for (; i < 4; ++i) {
+        int j = 0;
+        for (; j < 4; ++j) {
             res.m[i][j] = a.m[i][0] * b.m[0][j] + a.m[i][1] * b.m[1][j] + a.m[i][2] * b.m[2][j] + a.m[i][3] * b.m[3][j];
         }
     }
