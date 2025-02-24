@@ -1,0 +1,59 @@
+name: Compile and Run vm.h tests
+on: [push, pull_request]
+
+jobs:
+  ubuntu:
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: sudo apt update && sudo apt install -y ${{ matrix.cc }}
+      - name: Compile vm tests
+        run: ${{ matrix.cc }} -O2 -std=c89 -pedantic -Wall -Wextra -Werror -Wvla -Wconversion -Wdouble-promotion -Wsign-conversion -Wuninitialized -Winit-self -Wunused -Wunused-macros -Wunused-local-typedefs -o vm_test_${{ matrix.cc }} tests/vm_test.c
+      - name: Run vm tests
+        run: ./vm_test_${{ matrix.cc }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-latest-${{ matrix.cc }}-vm_test
+          path: vm_test_${{ matrix.cc }}
+  macos:
+    strategy:
+      matrix:
+        cc: [clang]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Compile vm tests
+        run: ${{ matrix.cc }} -O2 -std=c89 -pedantic -Wall -Wextra -Werror -Wvla -Wconversion -Wdouble-promotion -Wsign-conversion -Wuninitialized -Winit-self -Wunused -Wunused-macros -Wunused-local-typedefs -o vm_test_${{ matrix.cc }} tests/vm_test.c
+      - name: Run vm tests
+        run: ./vm_test_${{ matrix.cc }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-latest-${{ matrix.cc }}-vm_test
+          path: vm_test_${{ matrix.cc }}
+  windows:
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: choco install -y llvm mingw
+      - name: Compile vm tests
+        run: ${{ matrix.cc }} -O2 -std=c89 -pedantic -Wall -Wextra -Werror -Wvla -Wconversion -Wdouble-promotion -Wsign-conversion -Wuninitialized -Winit-self -Wunused -Wunused-macros -Wunused-local-typedefs -o vm_test_${{ matrix.cc }}.exe tests/vm_test.c
+      - name: Run vm tests
+        run: .\vm_test_${{ matrix.cc }}.exe
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-latest-${{ matrix.cc }}-vm_test
+          path: vm_test_${{ matrix.cc }}.exe
