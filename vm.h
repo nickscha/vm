@@ -196,8 +196,8 @@ VM_API VM_INLINE float vm_cosf(float x)
 VM_API VM_INLINE float vm_sinf(float x)
 {
     const int terms = 10;
-    float result = x;
-    float term = x;
+    float result;
+    float term;
     int sign = -1;
 
     int i;
@@ -213,6 +213,9 @@ VM_API VM_INLINE float vm_sinf(float x)
     {
         x += VM_PIf_DOUBLED;
     }
+
+    result = x;
+    term = x;
 
     for (i = 1; i < terms; ++i)
     {
@@ -606,7 +609,7 @@ VM_API VM_INLINE v4 vm_v4_add(v4 a, v4 b)
     result.x = a.x + b.x;
     result.y = a.y + b.y;
     result.z = a.z + b.z;
-	result.w = a.w + b.w;
+    result.w = a.w + b.w;
 
     return (result);
 }
@@ -618,7 +621,7 @@ VM_API VM_INLINE v4 vm_v4_addf(v4 a, float b)
     result.x = a.x + b;
     result.y = a.y + b;
     result.z = a.z + b;
-	result.w = a.w + b;
+    result.w = a.w + b;
 
     return (result);
 }
@@ -630,7 +633,7 @@ VM_API VM_INLINE v4 vm_v4_sub(v4 a, v4 b)
     result.x = a.x - b.x;
     result.y = a.y - b.y;
     result.z = a.z - b.z;
-	result.w = a.w - b.w;
+    result.w = a.w - b.w;
 
     return (result);
 }
@@ -642,7 +645,7 @@ VM_API VM_INLINE v4 vm_v4_subf(v4 a, float b)
     result.x = a.x - b;
     result.y = a.y - b;
     result.z = a.z - b;
-	result.w = a.w - b;
+    result.w = a.w - b;
 
     return (result);
 }
@@ -654,7 +657,7 @@ VM_API VM_INLINE v4 vm_v4_mul(v4 a, v4 b)
     result.x = a.x * b.x;
     result.y = a.y * b.y;
     result.z = a.z * b.z;
-	result.w = a.w * b.w;
+    result.w = a.w * b.w;
 
     return (result);
 }
@@ -666,7 +669,7 @@ VM_API VM_INLINE v4 vm_v4_mulf(v4 a, float b)
     result.x = a.x * b;
     result.y = a.y * b;
     result.z = a.z * b;
-	result.w = a.w * b;
+    result.w = a.w * b;
 
     return (result);
 }
@@ -678,7 +681,7 @@ VM_API VM_INLINE v4 vm_v4_div(v4 a, v4 b)
     result.x = a.x / b.x;
     result.y = a.y / b.y;
     result.z = a.z / b.z;
-	result.w = a.w / b.w;
+    result.w = a.w / b.w;
 
     return (result);
 }
@@ -690,7 +693,7 @@ VM_API VM_INLINE v4 vm_v4_divf(v4 a, float b)
     result.x = a.x / b;
     result.y = a.y / b;
     result.z = a.z / b;
-	result.w = a.w / b;
+    result.w = a.w / b;
 
     return (result);
 }
