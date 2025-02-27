@@ -128,9 +128,19 @@ VM_API VM_INLINE float vm_power(float base, int exp)
     float result = 1.0f;
     int i;
 
-    for (i = 0; i < exp; ++i)
+    if (exp < 0)
     {
-        result *= base;
+        for (i = 0; i < -exp; ++i)
+        {
+            result /= base;
+        }
+    }
+    else
+    {
+        for (i = 0; i < exp; ++i)
+        {
+            result *= base;
+        }
     }
 
     return (result);
