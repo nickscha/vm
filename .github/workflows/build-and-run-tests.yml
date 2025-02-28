@@ -46,8 +46,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Install Dependencies
-        run: choco install -y llvm mingw
       - name: Compile vm tests
         run: ${{ matrix.cc }} -O2 -std=c89 -pedantic -Wall -Wextra -Werror -Wvla -Wconversion -Wdouble-promotion -Wsign-conversion -Wuninitialized -Winit-self -Wunused -Wunused-macros -Wunused-local-typedefs -o vm_test_${{ matrix.cc }}.exe tests/vm_test.c
       - name: Run vm tests
