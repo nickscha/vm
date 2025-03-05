@@ -36,6 +36,7 @@ void vm_test_v2(void)
   assert(vm_v2_data(&a)[1] == 1.0f);
   assert(vm_v2_add(a, b).x == 2.0f);
   assert(vm_v2_add(a, b).y == 2.0f);
+  assert(vm_v2_length_manhatten(a, b, 1.0f) == 0.0f);
 }
 
 void vm_test_v3(void)
@@ -55,6 +56,8 @@ void vm_test_v3(void)
   assert(vm_v3_cross(a, b).y == 0.0f);
   assert(vm_v3_cross(a, b).z == 0.0f);
   assert(vm_v3_dot(a, c) == 6.0f);
+  assert(vm_v3_length_manhatten(a, c, 1.0f) == 3.0f);
+  assert(vm_v3_length_manhatten(a, c, 0.5f) == 6.0f);
 }
 
 void vm_test_v4(void)
@@ -99,6 +102,34 @@ void vm_test_quat(void)
 
 void vm_test_frustum(void)
 {
+  int width = 800;
+  int height = 600;
+
+  v3 look_at_pos = vm_v3_zero();              /* Where should the camera look at */
+  v3 up = vm_v3(0.0f, 1.0f, 0.0f);            /* World/Camera up */
+  v3 cam_position = vm_v3(0.0f, 0.0f, 13.0f); /* Camera set a little bit back */
+  float cam_fov = 90.0f;
+
+  m4x4 projection = vm_m4x4_perspective(vm_rad(cam_fov), (float)width / (float)height, 0.1f, 1000.0f);
+  m4x4 view = vm_m4x4_lookAt(cam_position, look_at_pos, up);
+  m4x4 projection_view = vm_m4x4_mul(projection, view);
+
+  /*
+    Frustum Culling Example
+  */
+  frustum frustum_planes = vm_frustum_extract_planes(projection_view);
+
+  v3 cube1_position = vm_v3_zero();
+  v3 cube1_dimensions = vm_v3_one(); /* No Scaling */
+
+  v3 cube2_position = vm_v3(100.0f, 0.0f, 0.0f); /* Cube is set far away to the left */
+  v3 cube2_dimensions = vm_v3_one();             /* No Scaling */
+
+  /* The cube is rendered inside the camera frustum */
+  assert(vm_frustum_is_cube_in(frustum_planes, cube1_position, cube1_dimensions, 0.15f));
+
+  /* The cube is outside of camer frustum ! */
+  assert(!vm_frustum_is_cube_in(frustum_planes, cube2_position, cube2_dimensions, 0.15f));
 }
 
 void vm_test_transformation(void)
