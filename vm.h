@@ -246,6 +246,8 @@ VM_API VM_INLINE float vm_tanf(float x)
  * # VECTOR 2 FUNCTIONS
  * #############################################################################
  */
+#define VM_V2_ELEMENT_COUNT 2
+
 typedef struct v2
 {
     float x;
@@ -376,6 +378,8 @@ VM_API VM_INLINE v2 vm_v2_divf(v2 a, float b)
  * # VECTOR 3 FUNCTIONS
  * #############################################################################
  */
+#define VM_V3_ELEMENT_COUNT 3
+
 typedef struct v3
 {
     float x;
@@ -558,6 +562,8 @@ VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
  * # VECTOR 4 FUNCTIONS
  * #############################################################################
  */
+#define VM_V4_ELEMENT_COUNT 4
+
 typedef struct v4
 {
     float x;
@@ -996,13 +1002,9 @@ VM_API VM_INLINE m4x4 vm_m4x4_lookAt(v3 eye, v3 target, v3 up)
  * # Quaternion FUNCTIONS
  * ######################################################################## #####
  */
-typedef struct quat
-{
-    float x;
-    float y;
-    float z;
-    float w;
-} quat;
+#define VM_QUAT_ELEMENT_COUNT 4
+
+typedef v4 quat;
 
 VM_API VM_INLINE quat vm_quat(float x, float y, float z, float w)
 {
