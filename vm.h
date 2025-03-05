@@ -97,6 +97,7 @@ VM_API VM_INLINE float vm_clamp(float value, float min, float max)
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#pragma GCC diagnostic ignored "-Wuninitialized"
 #elif defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable : 4699) /* MSVC-specific aliasing warning */
