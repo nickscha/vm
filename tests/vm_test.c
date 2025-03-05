@@ -42,6 +42,7 @@ void vm_test_v3(void)
 {
   v3 a = {1.0f, 1.0f, 1.0f};
   v3 b = vm_v3_one();
+  v3 c = {2.0f, 2.0f, 2.0f};
 
   assert(vm_v3_equals(a, b));
   assert(vm_v3_data(&a)[0] == 1.0f);
@@ -50,6 +51,10 @@ void vm_test_v3(void)
   assert(vm_v3_add(a, b).x == 2.0f);
   assert(vm_v3_add(a, b).y == 2.0f);
   assert(vm_v3_add(a, b).z == 2.0f);
+  assert(vm_v3_cross(a, b).x == 0.0f);
+  assert(vm_v3_cross(a, b).y == 0.0f);
+  assert(vm_v3_cross(a, b).z == 0.0f);
+  assert(vm_v3_dot(a, c) == 6.0f);
 }
 
 void vm_test_v4(void)
