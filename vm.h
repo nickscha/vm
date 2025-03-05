@@ -242,6 +242,11 @@ VM_API VM_INLINE float vm_tanf(float x)
     return (vm_sinf(x) / vm_cosf(x));
 }
 
+VM_API VM_INLINE float vm_absf(float x)
+{
+    return (x < 0.0f ? -x : x);
+}
+
 /* #############################################################################
  * # VECTOR 2 FUNCTIONS
  * #############################################################################
@@ -372,6 +377,11 @@ VM_API VM_INLINE v2 vm_v2_divf(v2 a, float b)
     result.y = a.y / b;
 
     return (result);
+}
+
+VM_API VM_INLINE float vm_v2_length_manhatten(v2 start, v2 end, float unit)
+{
+    return ((vm_absf(start.x - end.x) + vm_absf(start.y - end.y)) / (unit == 0.0f ? 1.0f : unit));
 }
 
 /* #############################################################################
@@ -556,6 +566,11 @@ VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
     result.z = ((b.z - a.z) * t) + a.z;
 
     return (result);
+}
+
+VM_API VM_INLINE float vm_v3_length_manhatten(v3 start, v3 end, float unit)
+{
+    return ((vm_absf(start.x - end.x) + vm_absf(start.y - end.y) + vm_absf(start.z - end.z)) / (unit == 0.0f ? 1.0f : unit));
 }
 
 /* #############################################################################
