@@ -109,17 +109,20 @@ VM_API VM_INLINE float vm_clamp(float value, float min, float max)
 #endif
 VM_API VM_INLINE float vm_invsqrt(float number)
 {
-    long i;
-    float x2;
-    float y;
+    union
+    {
+        float f;
+        long i;
+    } conv;
+
+    float x2, y;
     const float threehalfs = 1.5F;
 
     x2 = number * 0.5F;
-    y = number;
-    i = *(long *)&y;
-    i = 0x5f3759df - (i >> 1);
-    y = *(float *)&i;
-    y = y * (threehalfs - (x2 * y * y));
+    conv.f = number;
+    conv.i = 0x5f3759df - (conv.i >> 1); /* Magic number for approximation */
+    y = conv.f;
+    y = y * (threehalfs - (x2 * y * y)); /* One iteration of Newton's method */
 
     return (y);
 }
