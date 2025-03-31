@@ -201,6 +201,75 @@ void vm_test_m4x4_perspective(void)
   assert(vm_fequal(p3.e[3][2], -1.0f));
 }
 
+void vm_test_m4x4_rotation(void)
+{
+  /* Identity rotation (axes aligned with world space) */
+  v3 forward = vm_v3(0.0f, 0.0f, 1.0f);
+  v3 up = vm_v3(0.0f, 1.0f, 0.0f);
+  v3 right = vm_v3(1.0f, 0.0f, 0.0f);
+  m4x4 r = vm_m4x4_rotation(forward, up, right);
+  assert(r.e[0][0] == 1.0f);
+  assert(r.e[0][1] == 0.0f);
+  assert(r.e[0][2] == 0.0f);
+  assert(r.e[0][3] == 0.0f);
+  assert(r.e[1][0] == 0.0f);
+  assert(r.e[1][1] == 1.0f);
+  assert(r.e[1][2] == 0.0f);
+  assert(r.e[1][3] == 0.0f);
+  assert(r.e[2][0] == 0.0f);
+  assert(r.e[2][1] == 0.0f);
+  assert(r.e[2][2] == 1.0f);
+  assert(r.e[2][3] == 0.0f);
+  assert(r.e[3][0] == 0.0f);
+  assert(r.e[3][1] == 0.0f);
+  assert(r.e[3][2] == 0.0f);
+  assert(r.e[3][3] == 1.0f);
+
+  /* 90-degree rotation around Y-axis (Z -> X, X -> -Z) */
+  forward = vm_v3(1.0f, 0.0f, 0.0f);
+  up = vm_v3(0.0f, 1.0f, 0.0f);
+  right = vm_v3(0.0f, 0.0f, -1.0f);
+  r = vm_m4x4_rotation(forward, up, right);
+  assert(r.e[0][0] == 0.0f);
+  assert(r.e[0][1] == 0.0f);
+  assert(r.e[0][2] == -1.0f);
+  assert(r.e[0][3] == 0.0f);
+  assert(r.e[1][0] == 0.0f);
+  assert(r.e[1][1] == 1.0f);
+  assert(r.e[1][2] == 0.0f);
+  assert(r.e[1][3] == 0.0f);
+  assert(r.e[2][0] == 1.0f);
+  assert(r.e[2][1] == 0.0f);
+  assert(r.e[2][2] == 0.0f);
+  assert(r.e[2][3] == 0.0f);
+  assert(r.e[3][0] == 0.0f);
+  assert(r.e[3][1] == 0.0f);
+  assert(r.e[3][2] == 0.0f);
+  assert(r.e[3][3] == 1.0f);
+
+  /* 180-degree rotation around Y-axis (Z -> -Z, X -> -X) */
+  forward = vm_v3(0.0f, 0.0f, -1.0f);
+  up = vm_v3(0.0f, 1.0f, 0.0f);
+  right = vm_v3(-1.0f, 0.0f, 0.0f);
+  r = vm_m4x4_rotation(forward, up, right);
+  assert(r.e[0][0] == -1.0f);
+  assert(r.e[0][1] == 0.0f);
+  assert(r.e[0][2] == 0.0f);
+  assert(r.e[0][3] == 0.0f);
+  assert(r.e[1][0] == 0.0f);
+  assert(r.e[1][1] == 1.0f);
+  assert(r.e[1][2] == 0.0f);
+  assert(r.e[1][3] == 0.0f);
+  assert(r.e[2][0] == 0.0f);
+  assert(r.e[2][1] == 0.0f);
+  assert(r.e[2][2] == -1.0f);
+  assert(r.e[2][3] == 0.0f);
+  assert(r.e[3][0] == 0.0f);
+  assert(r.e[3][1] == 0.0f);
+  assert(r.e[3][2] == 0.0f);
+  assert(r.e[3][3] == 1.0f);
+}
+
 void vm_test_quat(void)
 {
   quat a = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -236,6 +305,7 @@ int main(void)
   vm_test_v4();
   vm_test_m4x4();
   vm_test_m4x4_perspective();
+  vm_test_m4x4_rotation();
   vm_test_quat();
   vm_test_frustum();
   vm_test_transformation();
