@@ -807,15 +807,10 @@ VM_API VM_INLINE m4x4 vm_m4x4_mul(m4x4 a, m4x4 b)
     int i = 0;
     for (; i < 4; ++i)
     {
-        int j = 0;
-        for (; j < 4; ++j)
-        {
-            result.e[i][j] =
-                a.e[i][0] * b.e[0][j] +
-                a.e[i][1] * b.e[1][j] +
-                a.e[i][2] * b.e[2][j] +
-                a.e[i][3] * b.e[3][j];
-        }
+        result.e[i][0] = a.e[i][0] * b.e[0][0] + a.e[i][1] * b.e[1][0] + a.e[i][2] * b.e[2][0] + a.e[i][3] * b.e[3][0];
+        result.e[i][1] = a.e[i][0] * b.e[0][1] + a.e[i][1] * b.e[1][1] + a.e[i][2] * b.e[2][1] + a.e[i][3] * b.e[3][1];
+        result.e[i][2] = a.e[i][0] * b.e[0][2] + a.e[i][1] * b.e[1][2] + a.e[i][2] * b.e[2][2] + a.e[i][3] * b.e[3][2];
+        result.e[i][3] = a.e[i][0] * b.e[0][3] + a.e[i][1] * b.e[1][3] + a.e[i][2] * b.e[2][3] + a.e[i][3] * b.e[3][3];
     }
 
     return (result);
