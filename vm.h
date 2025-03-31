@@ -821,6 +821,25 @@ VM_API VM_INLINE m4x4 vm_m4x4_mul(m4x4 a, m4x4 b)
     return (result);
 }
 
+VM_API VM_INLINE int vm_m4x4_equals(m4x4 a, m4x4 b)
+{
+    float tolerance = 1e-6f;
+    int i;
+    int j;
+
+    for (i = 0; i < 4; ++i)
+    {
+        for (j = 0; j < 4; ++j)
+        {
+            if (vm_absf(a.e[i][j] - b.e[i][j]) > tolerance)
+            {
+                return (0);
+            }
+        }
+    }
+    return (1);
+}
+
 VM_API VM_INLINE m4x4 vm_m4x4_perspective(float fov, float aspectRatio, float zNear, float zFar)
 {
     float f = 1.0f / vm_tanf(fov * 0.5f);
@@ -831,7 +850,7 @@ VM_API VM_INLINE m4x4 vm_m4x4_perspective(float fov, float aspectRatio, float zN
     result.e[0][0] = f / aspectRatio;
     result.e[1][1] = f;
     result.e[2][2] = (zNear + zFar) * fn;
-    result.e[2][3] = 2.0f * zNear * zFar * fn;
+    result.e[2][3] = (2.0f * zNear * zFar) * fn;
     result.e[3][2] = -1.0f;
 
     return (result);

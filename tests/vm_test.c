@@ -29,6 +29,11 @@ void vm_test_math(void)
 /* Small tolerance for floating-point comparisons */
 #define EPSILON 1e-6f
 
+int vm_fequal(float a, float b)
+{
+  return vm_absf(a - b) < EPSILON;
+}
+
 void vm_test_absf(void)
 {
   assert(vm_absf(vm_absf(-5.0f) - 5.0f) < EPSILON);   /* |-5| = 5 */
@@ -143,6 +148,59 @@ void vm_test_m4x4(void)
   assert(a.e[3][3] == 1.0f);
 }
 
+void vm_test_m4x4_perspective(void)
+{
+  /* Perspective Projection */
+  m4x4 p1, p2, p3;
+  m4x4 p = vm_m4x4_perspective(VM_PIf / 4, 16.0f / 9.0f, 0.1f, 100.0f);
+  float f = 1.0f / vm_tanf((VM_PIf / 4) * 0.5f);
+  float fn = 1.0f / (0.1f - 100.0f);
+
+  assert(vm_fequal(p.e[0][0], f / (16.0f / 9.0f)));
+  assert(vm_fequal(p.e[0][1], 0.0f));
+  assert(vm_fequal(p.e[0][2], 0.0f));
+  assert(vm_fequal(p.e[0][3], 0.0f));
+
+  assert(vm_fequal(p.e[1][0], 0.0f));
+  assert(vm_fequal(p.e[1][1], f));
+  assert(vm_fequal(p.e[1][2], 0.0f));
+  assert(vm_fequal(p.e[1][3], 0.0f));
+
+  assert(vm_fequal(p.e[2][0], 0.0f));
+  assert(vm_fequal(p.e[2][1], 0.0f));
+  assert(vm_fequal(p.e[2][2], (0.1f + 100.0f) * fn));
+  assert(vm_fequal(p.e[2][3], 2.0f * 0.1f * 100.0f * fn));
+
+  assert(vm_fequal(p.e[3][0], 0.0f));
+  assert(vm_fequal(p.e[3][1], 0.0f));
+  assert(vm_fequal(p.e[3][2], -1.0f));
+  assert(vm_fequal(p.e[3][3], 0.0f));
+
+  /* 45-degree FOV, 16:9 aspect ratio, near=0.1, far=100 */
+  p1 = vm_m4x4_perspective(VM_PIf / 4, 16.0f / 9.0f, 0.1f, 100.0f);
+  assert(vm_fequal(p1.e[0][0], 1.3579952f));  /* 1 / (tan(45°/2) * (16/9)) */
+  assert(vm_fequal(p1.e[1][1], 2.4142137f));  /* 1 / tan(45°/2) */
+  assert(vm_fequal(p1.e[2][2], -1.002002f));  /* (far+near) / (near-far) */
+  assert(vm_fequal(p1.e[2][3], -0.2002002f)); /* (2*far*near) / (near-far) */
+  assert(vm_fequal(p1.e[3][2], -1.0f));
+
+  /* 60-degree FOV, 4:3 aspect ratio, near=0.1, far=100 */
+  p2 = vm_m4x4_perspective(VM_PIf / 3, 4.0f / 3.0f, 0.1f, 100.0f);
+  assert(vm_fequal(p2.e[0][0], 1.2990381f)); /* 1 / (tan(60°/2) * (4/3)) */
+  assert(vm_fequal(p2.e[1][1], 1.7320508f)); /* 1 / tan(60°/2) */
+  assert(vm_fequal(p2.e[2][2], -1.002002f));
+  assert(vm_fequal(p2.e[2][3], -0.2002002f));
+  assert(vm_fequal(p2.e[3][2], -1.0f));
+
+  /* 90-degree FOV, 1:1 aspect ratio, near=0.1, far=50 */
+  p3 = vm_m4x4_perspective(VM_PIf / 2, 1.0f, 0.1f, 50.0f);
+  assert(vm_fequal(p3.e[0][0], 1.0f)); /* 1 / tan(90°/2) */
+  assert(vm_fequal(p3.e[1][1], 1.0f));
+  assert(vm_fequal(p3.e[2][2], -1.004008f));  /* (far+near) / (near-far) */
+  assert(vm_fequal(p3.e[2][3], -0.2004008f)); /* (2*far*near) / (near-far) */
+  assert(vm_fequal(p3.e[3][2], -1.0f));
+}
+
 void vm_test_quat(void)
 {
   quat a = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -177,6 +235,7 @@ int main(void)
   vm_test_v3();
   vm_test_v4();
   vm_test_m4x4();
+  vm_test_m4x4_perspective();
   vm_test_quat();
   vm_test_frustum();
   vm_test_transformation();
