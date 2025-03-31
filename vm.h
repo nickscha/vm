@@ -823,21 +823,26 @@ VM_API VM_INLINE m4x4 vm_m4x4_mul(m4x4 a, m4x4 b)
 
 VM_API VM_INLINE int vm_m4x4_equals(m4x4 a, m4x4 b)
 {
-    float tolerance = 1e-6f;
-    int i;
-    int j;
+    return (
+        a.e[0][0] == b.e[0][0] &&
+        a.e[0][1] == b.e[0][1] &&
+        a.e[0][2] == b.e[0][2] &&
+        a.e[0][3] == b.e[0][3] &&
 
-    for (i = 0; i < 4; ++i)
-    {
-        for (j = 0; j < 4; ++j)
-        {
-            if (vm_absf(a.e[i][j] - b.e[i][j]) > tolerance)
-            {
-                return (0);
-            }
-        }
-    }
-    return (1);
+        a.e[1][0] == b.e[1][0] &&
+        a.e[1][1] == b.e[1][1] &&
+        a.e[1][2] == b.e[1][2] &&
+        a.e[1][3] == b.e[1][3] &&
+
+        a.e[2][0] == b.e[2][0] &&
+        a.e[2][1] == b.e[2][1] &&
+        a.e[2][2] == b.e[2][2] &&
+        a.e[2][3] == b.e[2][3] &&
+
+        a.e[3][0] == b.e[3][0] &&
+        a.e[3][1] == b.e[3][1] &&
+        a.e[3][2] == b.e[3][2] &&
+        a.e[3][3] == b.e[3][3]);
 }
 
 VM_API VM_INLINE m4x4 vm_m4x4_perspective(float fov, float aspectRatio, float zNear, float zFar)
