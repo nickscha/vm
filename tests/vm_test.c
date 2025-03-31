@@ -270,6 +270,37 @@ void vm_test_m4x4_rotation(void)
   assert(r.e[3][3] == 1.0f);
 }
 
+void vm_test_m4x4_lookAt(void)
+{
+  v3 eye = vm_v3(0.0f, 0.0f, 5.0f);
+  v3 target = vm_v3(0.0f, 0.0f, 0.0f);
+  v3 up = vm_v3(0.0f, 1.0f, 0.0f);
+
+  float tolerance = 1e-9f;
+
+  m4x4 m = vm_m4x4_lookAt(eye, target, up);
+
+  assert(vm_absf(m.e[0][0]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[0][1]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[0][2]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[0][3]) - 0.0f <= tolerance);
+
+  assert(vm_absf(m.e[1][0]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[1][1]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[1][2]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[1][3]) - 0.0f <= tolerance);
+
+  assert(vm_absf(m.e[2][0]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[2][1]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[2][2]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[2][3]) - 5.0f <= tolerance);
+
+  assert(vm_absf(m.e[3][0]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[3][1]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[3][2]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[3][3]) - 1.0f <= tolerance);
+}
+
 void vm_test_quat(void)
 {
   quat a = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -306,6 +337,7 @@ int main(void)
   vm_test_m4x4();
   vm_test_m4x4_perspective();
   vm_test_m4x4_rotation();
+  vm_test_m4x4_lookAt();
   vm_test_quat();
   vm_test_frustum();
   vm_test_transformation();
