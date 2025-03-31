@@ -89,6 +89,11 @@ VM_API VM_INLINE float vm_min(float a, float b)
     return ((a < b) ? a : b);
 }
 
+VM_API VM_INLINE int vm_mini(int a, int b)
+{
+    return ((a < b) ? a : b);
+}
+
 VM_API VM_INLINE float vm_clamp(float value, float min, float max)
 {
     return (vm_max(min, vm_min(max, value)));

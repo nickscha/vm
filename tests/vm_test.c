@@ -26,6 +26,48 @@ void vm_test_math(void)
   assert(vm_clamp(25.0f, 10.0f, 20.0f) == 20.0f);
 }
 
+/* Small tolerance for floating-point comparisons */
+#define EPSILON 1e-6f
+
+void vm_test_absf(void)
+{
+  assert(vm_absf(vm_absf(-5.0f) - 5.0f) < EPSILON);   /* |-5| = 5 */
+  assert(vm_absf(vm_absf(3.0f) - 3.0f) < EPSILON);    /* |3| = 3 */
+  assert(vm_absf(vm_absf(0.0f) - 0.0f) < EPSILON);    /* |0| = 0 */
+  assert(vm_absf(vm_absf(-1e-6f) - 1e-6f) < EPSILON); /* Tiny negative value */
+  assert(vm_absf(vm_absf(1e6f) - 1e6f) < EPSILON);    /* Large positive value */
+}
+
+void vm_test_sinf(void)
+{
+  assert(vm_absf(vm_sinf(0.0f) - 0.0f) < EPSILON);
+  assert(vm_absf(vm_sinf(VM_PIf / 6) - 0.5f) < EPSILON);        /* sin(30°) = 0.5 */
+  assert(vm_absf(vm_sinf(VM_PIf / 4) - 0.70710678f) < EPSILON); /* sin(45°) ≈ sqrt(2)/2 */
+  assert(vm_absf(vm_sinf(VM_PIf / 3) - 0.8660254f) < EPSILON);  /* sin(60°) ≈ sqrt(3)/2 */
+  assert(vm_absf(vm_sinf(VM_PIf / 2) - 1.0f) < EPSILON);        /* sin(90°) = 1 */
+  assert(vm_absf(vm_sinf(VM_PIf) - 0.0f) < EPSILON);            /* sin(180°) = 0 */
+  assert(vm_absf(vm_sinf(3 * VM_PIf / 2) + 1.0f) < EPSILON);    /* sin(270°) = -1 */
+}
+
+void vm_test_cosf(void)
+{
+  assert(vm_absf(vm_cosf(0.0f) - 1.0f) < EPSILON);              /* cos(0°) = 1 */
+  assert(vm_absf(vm_cosf(VM_PIf / 6) - 0.8660254f) < EPSILON);  /* cos(30°) ≈ sqrt(3)/2 */
+  assert(vm_absf(vm_cosf(VM_PIf / 4) - 0.70710678f) < EPSILON); /* cos(45°) ≈ sqrt(2)/2 */
+  assert(vm_absf(vm_cosf(VM_PIf / 3) - 0.5f) < EPSILON);        /* cos(60°) = 0.5 */
+  assert(vm_absf(vm_cosf(VM_PIf / 2)) < EPSILON);               /* cos(90°) = 0 */
+  assert(vm_absf(vm_cosf(VM_PIf) + 1.0f) < EPSILON);            /* cos(180°) = -1 */
+  assert(vm_absf(vm_cosf(3 * VM_PIf / 2)) < EPSILON);           /* cos(270°) = 0 */
+}
+
+void vm_test_tanf(void)
+{
+  assert(vm_absf(vm_tanf(0.0f) - 0.0f) < EPSILON);              /* tan(0°) = 0 */
+  assert(vm_absf(vm_tanf(VM_PIf / 6) - 0.57735027f) < EPSILON); /* tan(30°) ≈ 1/sqrt(3) */
+  assert(vm_absf(vm_tanf(VM_PIf / 4) - 1.0f) < EPSILON);        /* tan(45°) = 1 */
+  assert(vm_absf(vm_tanf(VM_PIf / 3) - 1.7320508f) < EPSILON);  /* tan(60°) ≈ sqrt(3) */
+}
+
 void vm_test_v2(void)
 {
   v2 a = {1.0f, 1.0f};
@@ -52,6 +94,9 @@ void vm_test_v3(void)
   assert(vm_v3_add(a, b).x == 2.0f);
   assert(vm_v3_add(a, b).y == 2.0f);
   assert(vm_v3_add(a, b).z == 2.0f);
+  assert(vm_v3_sub(a, c).x == -1.0f);
+  assert(vm_v3_sub(a, c).y == -1.0f);
+  assert(vm_v3_sub(a, c).z == -1.0f);
   assert(vm_v3_cross(a, b).x == 0.0f);
   assert(vm_v3_cross(a, b).y == 0.0f);
   assert(vm_v3_cross(a, b).z == 0.0f);
@@ -74,6 +119,18 @@ void vm_test_v4(void)
   assert(vm_v4_add(a, b).y == 2.0f);
   assert(vm_v4_add(a, b).z == 2.0f);
   assert(vm_v4_add(a, b).w == 2.0f);
+  assert(vm_v4_sub(a, b).x == 0.0f);
+  assert(vm_v4_sub(a, b).y == 0.0f);
+  assert(vm_v4_sub(a, b).z == 0.0f);
+  assert(vm_v4_sub(a, b).w == 0.0f);
+  assert(vm_v4_mul(a, b).x == 1.0f);
+  assert(vm_v4_mul(a, b).y == 1.0f);
+  assert(vm_v4_mul(a, b).z == 1.0f);
+  assert(vm_v4_mul(a, b).w == 1.0f);
+  assert(vm_v4_divf(a, 0.5f).x == 2.0f);
+  assert(vm_v4_divf(a, 0.5f).y == 2.0f);
+  assert(vm_v4_divf(a, 0.5f).z == 2.0f);
+  assert(vm_v4_divf(a, 0.5f).w == 2.0f);
 }
 
 void vm_test_m4x4(void)
@@ -112,6 +169,10 @@ int main(void)
 {
 
   vm_test_math();
+  vm_test_absf();
+  vm_test_sinf();
+  vm_test_cosf();
+  vm_test_tanf();
   vm_test_v2();
   vm_test_v3();
   vm_test_v4();
