@@ -75,9 +75,6 @@ __attribute((force_align_arg_pointer))
 int
 mainCRTStartup(void)
 {
-    float dstProjection[VM_M4X4_ELEMENT_COUNT] = {0};
-    float dstView[VM_M4X4_ELEMENT_COUNT] = {0};
-
     int width = 800;
     int height = 600;
 
@@ -107,15 +104,6 @@ mainCRTStartup(void)
     /* The cube is outside of camer frustum ! */
     assert(!vm_frustum_is_cube_in(frustum_planes, cube2_position, cube2_dimensions, 0.15f));
 
-    /*
-      OpenGl need to know
-    */
-    /* IMPORTANT: Swap to column major order for OpenGl glUniformMatrix4fv */
-    vm_m4x4_swap(projection, dstProjection);
-
-    /* IMPORTANT: Swap to column major order for OpenGl glUniformMatrix4fv */
-    vm_m4x4_swap(view, dstView);
-    
     win32_printf("[win32][nostdlib] vm example finished\n");
 
     return 0;
