@@ -16,14 +16,14 @@ LICENSE
 
 void vm_test_math(void)
 {
-  assert(vm_rad(180) >= 3.141590f && vm_rad(180) <= 3.141593f);
-  assert(vm_max(1.0f, 2.0f) == 2.0f);
-  assert(vm_max(1.0f, -2.0f) == 1.0f);
-  assert(vm_min(1.0f, 2.0f) == 1.0f);
-  assert(vm_min(1.0f, -2.0f) == -2.0f);
-  assert(vm_clamp(5.0f, 10.0f, 20.0f) == 10.0f);
-  assert(vm_clamp(15.0f, 10.0f, 20.0f) == 15.0f);
-  assert(vm_clamp(25.0f, 10.0f, 20.0f) == 20.0f);
+  assert(vm_radf(180) >= 3.141590f && vm_radf(180) <= 3.141593f);
+  assert(vm_maxf(1.0f, 2.0f) == 2.0f);
+  assert(vm_maxf(1.0f, -2.0f) == 1.0f);
+  assert(vm_minf(1.0f, 2.0f) == 1.0f);
+  assert(vm_minf(1.0f, -2.0f) == -2.0f);
+  assert(vm_clampf(5.0f, 10.0f, 20.0f) == 10.0f);
+  assert(vm_clampf(15.0f, 10.0f, 20.0f) == 15.0f);
+  assert(vm_clampf(25.0f, 10.0f, 20.0f) == 20.0f);
 }
 
 /* Small tolerance for floating-point comparisons */

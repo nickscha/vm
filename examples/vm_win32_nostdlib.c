@@ -86,7 +86,7 @@ mainCRTStartup(void)
     v3 cam_position = vm_v3(0.0f, 0.0f, 13.0f); /* Camera set a little bit back */
     float cam_fov = 90.0f;
 
-    m4x4 projection = vm_m4x4_perspective(vm_rad(cam_fov), (float)width / (float)height, 0.1f, 1000.0f);
+    m4x4 projection = vm_m4x4_perspective(vm_radf(cam_fov), (float)width / (float)height, 0.1f, 1000.0f);
     m4x4 view = vm_m4x4_lookAt(cam_position, look_at_pos, up);
     m4x4 projection_view = vm_m4x4_mul(projection, view);
 

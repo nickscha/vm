@@ -64,17 +64,17 @@ VM_API VM_INLINE float vm_randf_range(float min, float max)
     return (min + (max - min) * vm_randf());
 }
 
-VM_API VM_INLINE float vm_rad(float degree)
+VM_API VM_INLINE float vm_radf(float degree)
 {
     return (degree * (VM_PIf / 180.0f));
 }
 
-VM_API VM_INLINE float vm_deg(float radians)
+VM_API VM_INLINE float vm_degf(float radians)
 {
     return (radians * (180.0f / VM_PIf));
 }
 
-VM_API VM_INLINE float vm_max(float a, float b)
+VM_API VM_INLINE float vm_maxf(float a, float b)
 {
     return ((a > b) ? a : b);
 }
@@ -84,7 +84,7 @@ VM_API VM_INLINE int vm_maxi(int a, int b)
     return ((a > b) ? a : b);
 }
 
-VM_API VM_INLINE float vm_min(float a, float b)
+VM_API VM_INLINE float vm_minf(float a, float b)
 {
     return ((a < b) ? a : b);
 }
@@ -94,9 +94,9 @@ VM_API VM_INLINE int vm_mini(int a, int b)
     return ((a < b) ? a : b);
 }
 
-VM_API VM_INLINE float vm_clamp(float value, float min, float max)
+VM_API VM_INLINE float vm_clampf(float value, float min, float max)
 {
-    return (vm_max(min, vm_min(max, value)));
+    return (vm_maxf(min, vm_minf(max, value)));
 }
 
 #ifdef __GNUC__
