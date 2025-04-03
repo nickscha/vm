@@ -183,7 +183,6 @@ VM_API VM_INLINE float vm_cosf(float x)
     const int terms = 10;
     float result = 1.0f; /* Start with the first term in the series (1) */
     float term = 1.0f;   /* Current term (starting with 1) */
-    int sign = -1;       /* Alternating sign for each term */
     int i;
     float x2;
 
@@ -203,9 +202,8 @@ VM_API VM_INLINE float vm_cosf(float x)
 
     for (i = 1; i < terms; ++i)
     {
-        term *= x2 / (float)((2 * i - 1) * (2 * i)); /* Efficient calculation of each term */
-        result += (float)sign * (float)term;
-        sign = -sign; /* Alternate the sign */
+        term *= -x2 / (float)((2 * i - 1) * (2 * i));
+        result += term;
     }
 
     return (result);
@@ -216,7 +214,6 @@ VM_API VM_INLINE float vm_sinf(float x)
     const int terms = 10;
     float result;
     float term;
-    int sign = -1;
     float x2;
 
     int i;
@@ -239,9 +236,8 @@ VM_API VM_INLINE float vm_sinf(float x)
 
     for (i = 1; i < terms; ++i)
     {
-        term *= x2 / (float)((2 * i) * (2 * i + 1));
-        result += (float)sign * (float)term;
-        sign = -sign;
+        term *= -x2 / (float)((2 * i) * (2 * i + 1));
+        result += term;
     }
 
     return (result);
