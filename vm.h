@@ -30,6 +30,14 @@ LICENSE
 #define VM_API static
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define VM_ALIGN_16 __attribute__((aligned(16)))
+#elif defined(_MSC_VER)
+#define VM_ALIGN_16 __declspec(align(16))
+#else
+#define VM_ALIGN_16
+#endif
+
 /* #############################################################################
  * # COMMON MATH FUNCTIONS
  * #############################################################################
@@ -399,7 +407,7 @@ typedef struct v3
     float x;
     float y;
     float z;
-} v3;
+} VM_ALIGN_16 v3;
 
 VM_API VM_INLINE v3 vm_v3(float x, float y, float z)
 {

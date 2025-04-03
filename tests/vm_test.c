@@ -110,6 +110,93 @@ void vm_test_v3(void)
   assert(vm_v3_length_manhatten(a, c, 0.5f) == 6.0f);
 }
 
+void vm_test_v3_cross_dot_normalize(void)
+{
+  v3 a = {1.0f, 0.0f, 0.0f};
+  v3 b = {0.0f, 1.0f, 0.0f};
+  v3 r = vm_v3_cross(a, b);
+  float rf;
+  float epsilon = 1e-2f;
+
+  assert(r.x == 0.0f);
+  assert(r.y == 0.0f);
+  assert(r.z == 1.0f);
+
+  a = vm_v3(1.0f, 0.0f, 0.0f);
+  b = vm_v3(0.0f, -1.0f, 0.0f);
+  r = vm_v3_cross(a, b);
+
+  assert(r.x == 0.0f);
+  assert(r.y == 0.0f);
+  assert(r.z == -1.0f);
+
+  a = vm_v3(1.0f, 2.0f, 3.0f);
+  b = vm_v3(2.0f, 4.0f, 6.0f);
+  r = vm_v3_cross(a, b);
+
+  assert(r.x == 0.0f);
+  assert(r.y == 0.0f);
+  assert(r.z == 0.0f);
+
+  a = vm_v3(2.0f, 3.0f, 4.0f);
+  b = vm_v3(5.0f, 6.0f, 7.0f);
+  r = vm_v3_cross(a, b);
+
+  assert(r.x == -3.0f);
+  assert(r.y == 6.0f);
+  assert(r.z == -3.0f);
+
+  a = vm_v3(1.0f, 2.0f, 3.0f);
+  b = vm_v3(4.0f, -5.0f, 6.0f);
+  rf = vm_v3_dot(a, b);
+  assert(rf == 12.0f);
+
+  a = vm_v3(1.0f, 1.0f, 1.0f);
+  b = vm_v3(0.0f, 0.0f, 0.0f);
+  rf = vm_v3_dot(a, b);
+  assert(rf == 0.0f);
+
+  a = vm_v3(1.0f, 0.0f, 0.0f);
+  b = vm_v3(0.0f, 1.0f, 0.0f);
+  rf = vm_v3_dot(a, b);
+  assert(rf == 0.0f);
+
+  a = vm_v3(1.0f, 2.0f, 3.0f);
+  b = vm_v3(-1.0f, -2.0f, -3.0f);
+  rf = vm_v3_dot(a, b);
+  assert(rf == -14.0f);
+
+  a = vm_v3(3.0f, 4.0f, 0.0f);
+  r = vm_v3_normalize(a);
+  assert(vm_absf(r.x - 0.6f) < epsilon);
+  assert(vm_absf(r.y - 0.8f) < epsilon);
+  assert(vm_absf(r.z - 0.0f) < epsilon);
+
+  a = vm_v3(1.0f, 0.0f, 0.0f);
+  r = vm_v3_normalize(a);
+  assert(vm_absf(r.x - 1.0f) < epsilon);
+  assert(vm_absf(r.y - 0.0f) < epsilon);
+  assert(vm_absf(r.z - 0.0f) < epsilon);
+
+  a = vm_v3(-3.0f, 4.0f, 0.0f);
+  r = vm_v3_normalize(a);
+  assert(vm_absf(r.x + 0.6f) < epsilon);
+  assert(vm_absf(r.y - 0.8f) < epsilon);
+  assert(vm_absf(r.z - 0.0f) < epsilon);
+
+  a = vm_v3(0.0f, 0.0f, 0.0f);
+  r = vm_v3_normalize(a);
+  assert(vm_absf(r.x - 0.0f) < epsilon);
+  assert(vm_absf(r.y - 0.0f) < epsilon);
+  assert(vm_absf(r.z - 0.0f) < epsilon);
+
+  a = vm_v3(10.0f, 0.0f, 0.0f);
+  r = vm_v3_normalize(a);
+  assert(vm_absf(r.x - 1.0f) < epsilon);
+  assert(vm_absf(r.y - 0.0f) < epsilon);
+  assert(vm_absf(r.z - 0.0f) < epsilon);
+}
+
 void vm_test_v4(void)
 {
   v4 a = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -333,6 +420,7 @@ int main(void)
   vm_test_tanf();
   vm_test_v2();
   vm_test_v3();
+  vm_test_v3_cross_dot_normalize();
   vm_test_v4();
   vm_test_m4x4();
   vm_test_m4x4_perspective();
