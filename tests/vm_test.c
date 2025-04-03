@@ -52,6 +52,17 @@ void vm_test_sinf(void)
   assert(vm_absf(vm_sinf(VM_PI / 2) - 1.0f) < EPSILON);        /* sin(90°) = 1 */
   assert(vm_absf(vm_sinf(VM_PI) - 0.0f) < EPSILON);            /* sin(180°) = 0 */
   assert(vm_absf(vm_sinf(3 * VM_PI / 2) + 1.0f) < EPSILON);    /* sin(270°) = -1 */
+
+  /* negative and multiples of π */
+  assert(vm_absf(vm_sinf(-VM_PI / 2) + 1.0f) < EPSILON);     /* sin(-90°) = -1 */
+  assert(vm_absf(vm_sinf(-VM_PI) - 0.0f) < EPSILON);         /* sin(-180°) = 0 */
+  assert(vm_absf(vm_sinf(-3 * VM_PI / 2) - 1.0f) < EPSILON); /* sin(-270°) = 1 */
+  assert(vm_absf(vm_sinf(2 * VM_PI) - 0.0f) < EPSILON);      /* sin(360°) = 0 */
+  assert(vm_absf(vm_sinf(3 * VM_PI) + 0.0f) < EPSILON);      /* sin(540°) = 0 */
+
+  assert(vm_absf(vm_sinf(2 * VM_PI + VM_PI / 4) - 0.70710678f) < EPSILON); /* sin(2π + 45°) = sin(45°) */
+  assert(vm_absf(vm_sinf(1e-6f) - 1e-6f) < EPSILON);                       /* close to zero */
+  assert(vm_absf(vm_sinf(1e6f) - vm_sinf(1e6f)) < EPSILON);                /* large angle (beyond typical cycles) */
 }
 
 void vm_test_cosf(void)
@@ -63,6 +74,10 @@ void vm_test_cosf(void)
   assert(vm_absf(vm_cosf(VM_PI / 2)) < EPSILON);               /* cos(90°) = 0 */
   assert(vm_absf(vm_cosf(VM_PI) + 1.0f) < EPSILON);            /* cos(180°) = -1 */
   assert(vm_absf(vm_cosf(3 * VM_PI / 2)) < EPSILON);           /* cos(270°) = 0 */
+  assert(vm_absf(vm_cosf(-VM_PI / 2)) < EPSILON);
+  assert(vm_absf(vm_cosf(-VM_PI) + 1.0f) < EPSILON);
+  assert(vm_absf(vm_cosf(-3 * VM_PI / 2)) < EPSILON);
+  assert(vm_absf(vm_cosf(2 * VM_PI) - 1.0f) < EPSILON);
 }
 
 void vm_test_tanf(void)
@@ -71,6 +86,12 @@ void vm_test_tanf(void)
   assert(vm_absf(vm_tanf(VM_PI / 6) - 0.57735027f) < EPSILON); /* tan(30°) ≈ 1/sqrt(3) */
   assert(vm_absf(vm_tanf(VM_PI / 4) - 1.0f) < EPSILON);        /* tan(45°) = 1 */
   assert(vm_absf(vm_tanf(VM_PI / 3) - 1.7320508f) < EPSILON);  /* tan(60°) ≈ sqrt(3) */
+  assert(vm_absf(vm_tanf(VM_PI / 2)) > 1000.0f);
+  assert(vm_absf(vm_tanf(3 * VM_PI / 4) + 1.0f) < EPSILON);
+  assert(vm_absf(vm_tanf(VM_PI) - 0.0f) < EPSILON);
+  assert(vm_absf(vm_tanf(3 * VM_PI / 2)) > 1000.0f);
+  assert(vm_absf(vm_tanf(2 * VM_PI) - 0.0f) < EPSILON);
+  assert(vm_absf(vm_tanf(11 * VM_PI / 6) + 0.57735027f) < EPSILON);
 }
 
 void vm_test_v2(void)
