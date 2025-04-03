@@ -219,7 +219,7 @@ VM_API VM_INLINE float vm_sinf(float x)
     float index, frac;
     int i, i2;
 
-    x -= VM_PI2 * (int)(x * (1.0f / VM_PI2));
+    x -= VM_PI2 * (float)((int)(x * (1.0f / VM_PI2)));
 
     if (x < 0)
     {
@@ -536,9 +536,9 @@ VM_API VM_INLINE v3 vm_v3_cross(v3 a, v3 b)
 {
     v3 result;
 
-    result.x = (a.y * b.z) + (-a.z * b.y);
-    result.y = (a.z * b.x) + (-a.x * b.z);
-    result.z = (a.x * b.y) + (-a.y * b.x);
+    result.x = (a.y * b.z) - (a.z * b.y);
+    result.y = (a.z * b.x) - (a.x * b.z);
+    result.z = (a.x * b.y) - (a.y * b.x);
 
     return (result);
 }
@@ -550,13 +550,23 @@ VM_API VM_INLINE float vm_v3_dot(v3 a, v3 b)
 
 VM_API VM_INLINE v3 vm_v3_normalize(v3 a)
 {
-    float scalar = vm_invsqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z));
+    float length = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
 
     v3 result;
 
-    result.x = a.x * scalar;
-    result.y = a.y * scalar;
-    result.z = a.z * scalar;
+    if (length > 0.0f)
+    {
+        float scalar = vm_invsqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z));
+        result.x = a.x * scalar;
+        result.y = a.y * scalar;
+        result.z = a.z * scalar;
+    }
+    else
+    {
+        result.x = 0.0f;
+        result.y = 0.0f;
+        result.z = 0.0f;
+    }
 
     return (result);
 }
