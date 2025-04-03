@@ -34,11 +34,11 @@ LICENSE
  * # COMMON MATH FUNCTIONS
  * #############################################################################
  */
-#define VM_PI 3.14159265358979323846264338327950288
-#define VM_PI_2 1.57079632679489661923132169163975144
-#define VM_PI_4 0.785398163397448309615660845819875721
-#define VM_PIf ((float)VM_PI)
-#define VM_PIf_DOUBLED ((float)(2.0f * VM_PIf))
+#define VM_PI 3.14159265358979323846f
+#define VM_PI2 6.28318530717958647692f
+#define VM_PI_HALF 1.57079632679489661923f
+#define VM_PI_QUART 0.785398163397448309615660845819875721
+#define VM_PI_DOUBLED ((float)(2.0f * VM_PI))
 
 /* Linear Congruential Generator (LCG) constants */
 #define VM_LCG_A 1664525U
@@ -66,12 +66,12 @@ VM_API VM_INLINE float vm_randf_range(float min, float max)
 
 VM_API VM_INLINE float vm_radf(float degree)
 {
-    return (degree * (VM_PIf / 180.0f));
+    return (degree * (VM_PI / 180.0f));
 }
 
 VM_API VM_INLINE float vm_degf(float radians)
 {
-    return (radians * (180.0f / VM_PIf));
+    return (radians * (180.0f / VM_PI));
 }
 
 VM_API VM_INLINE float vm_maxf(float a, float b)
@@ -102,7 +102,7 @@ VM_API VM_INLINE float vm_clampf(float value, float min, float max)
 VM_API VM_INLINE float vm_floorf(float x)
 {
     int i = (int)x;
-    return (x < 0.0f && x != (float) i) ? (float)(i - 1) : (float)i;
+    return (x < 0.0f && x != (float)i) ? (float)(i - 1) : (float)i;
 }
 
 #ifdef __GNUC__
@@ -177,70 +177,70 @@ VM_API VM_INLINE float vm_fmodf(float x, float y)
     return ((-quotient * y) + x);
 }
 
-VM_API VM_INLINE float vm_cosf(float x)
-{
-    /* Limit the number of terms in the series to 10 for approximation */
-    const int terms = 10;
-    float result = 1.0f; /* Start with the first term in the series (1) */
-    float term = 1.0f;   /* Current term (starting with 1) */
-    int i;
-    float x2;
+#define VM_LUT_SIZE 256
+#define VM_LUT_MASK (VM_LUT_SIZE - 1)
 
-    /* Reduce x to the range [-pi, pi] for better accuracy */
-    x = vm_fmodf(x, VM_PIf_DOUBLED);
-
-    if (x > VM_PIf)
-    {
-        x -= VM_PIf_DOUBLED;
-    }
-    else if (x < -VM_PIf)
-    {
-        x += VM_PIf_DOUBLED;
-    }
-
-    x2 = x * x;
-
-    for (i = 1; i < terms; ++i)
-    {
-        term *= -x2 / (float)((2 * i - 1) * (2 * i));
-        result += term;
-    }
-
-    return (result);
-}
+static const float vm_lut[VM_LUT_SIZE] = {
+    0.0000f, 0.0245f, 0.0491f, 0.0736f, 0.0980f, 0.1224f, 0.1467f, 0.1710f,
+    0.1951f, 0.2191f, 0.2430f, 0.2667f, 0.2903f, 0.3137f, 0.3369f, 0.3599f,
+    0.3827f, 0.4052f, 0.4276f, 0.4496f, 0.4714f, 0.4929f, 0.5141f, 0.5350f,
+    0.5556f, 0.5758f, 0.5957f, 0.6152f, 0.6344f, 0.6532f, 0.6716f, 0.6895f,
+    0.7071f, 0.7242f, 0.7409f, 0.7572f, 0.7730f, 0.7883f, 0.8032f, 0.8176f,
+    0.8315f, 0.8449f, 0.8577f, 0.8701f, 0.8819f, 0.8932f, 0.9040f, 0.9142f,
+    0.9239f, 0.9330f, 0.9415f, 0.9495f, 0.9569f, 0.9638f, 0.9700f, 0.9757f,
+    0.9808f, 0.9853f, 0.9892f, 0.9925f, 0.9952f, 0.9973f, 0.9988f, 0.9997f,
+    1.0000f, 0.9997f, 0.9988f, 0.9973f, 0.9952f, 0.9925f, 0.9892f, 0.9853f,
+    0.9808f, 0.9757f, 0.9700f, 0.9638f, 0.9569f, 0.9495f, 0.9415f, 0.9330f,
+    0.9239f, 0.9142f, 0.9040f, 0.8932f, 0.8819f, 0.8701f, 0.8577f, 0.8449f,
+    0.8315f, 0.8176f, 0.8032f, 0.7883f, 0.7730f, 0.7572f, 0.7409f, 0.7242f,
+    0.7071f, 0.6895f, 0.6716f, 0.6532f, 0.6344f, 0.6152f, 0.5957f, 0.5758f,
+    0.5556f, 0.5350f, 0.5141f, 0.4929f, 0.4714f, 0.4496f, 0.4276f, 0.4052f,
+    0.3827f, 0.3599f, 0.3369f, 0.3137f, 0.2903f, 0.2667f, 0.2430f, 0.2191f,
+    0.1951f, 0.1710f, 0.1467f, 0.1224f, 0.0980f, 0.0736f, 0.0491f, 0.0245f,
+    0.0000f, -0.0245f, -0.0491f, -0.0736f, -0.0980f, -0.1224f, -0.1467f, -0.1710f,
+    -0.1951f, -0.2191f, -0.2430f, -0.2667f, -0.2903f, -0.3137f, -0.3369f, -0.3599f,
+    -0.3827f, -0.4052f, -0.4276f, -0.4496f, -0.4714f, -0.4929f, -0.5141f, -0.5350f,
+    -0.5556f, -0.5758f, -0.5957f, -0.6152f, -0.6344f, -0.6532f, -0.6716f, -0.6895f,
+    -0.7071f, -0.7242f, -0.7409f, -0.7572f, -0.7730f, -0.7883f, -0.8032f, -0.8176f,
+    -0.8315f, -0.8449f, -0.8577f, -0.8701f, -0.8819f, -0.8932f, -0.9040f, -0.9142f,
+    -0.9239f, -0.9330f, -0.9415f, -0.9495f, -0.9569f, -0.9638f, -0.9700f, -0.9757f,
+    -0.9808f, -0.9853f, -0.9892f, -0.9925f, -0.9952f, -0.9973f, -0.9988f, -0.9997f,
+    -1.0000f, -0.9997f, -0.9988f, -0.9973f, -0.9952f, -0.9925f, -0.9892f, -0.9853f,
+    -0.9808f, -0.9757f, -0.9700f, -0.9638f, -0.9569f, -0.9495f, -0.9415f, -0.9330f,
+    -0.9239f, -0.9142f, -0.9040f, -0.8932f, -0.8819f, -0.8701f, -0.8577f, -0.8449f,
+    -0.8315f, -0.8176f, -0.8032f, -0.7883f, -0.7730f, -0.7572f, -0.7409f, -0.7242f,
+    -0.7071f, -0.6895f, -0.6716f, -0.6532f, -0.6344f, -0.6152f, -0.5957f, -0.5758f,
+    -0.5556f, -0.5350f, -0.5141f, -0.4929f, -0.4714f, -0.4496f, -0.4276f, -0.4052f,
+    -0.3827f, -0.3599f, -0.3369f, -0.3137f, -0.2903f, -0.2667f, -0.2430f, -0.2191f,
+    -0.1951f, -0.1710f, -0.1467f, -0.1224f, -0.0980f, -0.0736f, -0.0491f, -0.0245f};
 
 VM_API VM_INLINE float vm_sinf(float x)
 {
-    const int terms = 10;
-    float result;
-    float term;
-    float x2;
+    float index, frac;
+    int i, i2;
 
-    int i;
-
-    /* Reduce x to the range [-pi, pi] for better accuracy */
-    x = vm_fmodf(x, VM_PIf_DOUBLED);
-
-    if (x > VM_PIf)
+    while (x < 0)
     {
-        x -= VM_PIf_DOUBLED;
+        x += VM_PI2;
     }
-    else if (x < -VM_PIf)
+    while (x >= VM_PI2)
     {
-        x += VM_PIf_DOUBLED;
+        x -= VM_PI2;
     }
 
-    result = x;
-    term = x;
-    x2 = x * x;
+    index = x * (VM_LUT_SIZE / VM_PI2);
+    i = (int)index;
+    frac = index - (float)i;
 
-    for (i = 1; i < terms; ++i)
-    {
-        term *= -x2 / (float)((2 * i) * (2 * i + 1));
-        result += term;
-    }
+    i &= (VM_LUT_SIZE - 1);
+    i2 = (i + 1) & (VM_LUT_SIZE - 1);
 
-    return (result);
+    return (1.0f - frac) * vm_lut[i] + frac * vm_lut[i2];
+}
+
+VM_API VM_INLINE float vm_cosf(float x)
+{
+    return (vm_sinf(x + VM_PI_HALF));
 }
 
 VM_API VM_INLINE float vm_tanf(float x)

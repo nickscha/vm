@@ -27,7 +27,7 @@ void vm_test_math(void)
 }
 
 /* Small tolerance for floating-point comparisons */
-#define EPSILON 1e-6f
+#define EPSILON 1e-4f
 
 int vm_fequal(float a, float b)
 {
@@ -46,31 +46,31 @@ void vm_test_absf(void)
 void vm_test_sinf(void)
 {
   assert(vm_absf(vm_sinf(0.0f) - 0.0f) < EPSILON);
-  assert(vm_absf(vm_sinf(VM_PIf / 6) - 0.5f) < EPSILON);        /* sin(30°) = 0.5 */
-  assert(vm_absf(vm_sinf(VM_PIf / 4) - 0.70710678f) < EPSILON); /* sin(45°) ≈ sqrt(2)/2 */
-  assert(vm_absf(vm_sinf(VM_PIf / 3) - 0.8660254f) < EPSILON);  /* sin(60°) ≈ sqrt(3)/2 */
-  assert(vm_absf(vm_sinf(VM_PIf / 2) - 1.0f) < EPSILON);        /* sin(90°) = 1 */
-  assert(vm_absf(vm_sinf(VM_PIf) - 0.0f) < EPSILON);            /* sin(180°) = 0 */
-  assert(vm_absf(vm_sinf(3 * VM_PIf / 2) + 1.0f) < EPSILON);    /* sin(270°) = -1 */
+  assert(vm_absf(vm_sinf(VM_PI / 6) - 0.5f) < EPSILON);        /* sin(30°) = 0.5 */
+  assert(vm_absf(vm_sinf(VM_PI / 4) - 0.70710678f) < EPSILON); /* sin(45°) ≈ sqrt(2)/2 */
+  assert(vm_absf(vm_sinf(VM_PI / 3) - 0.8660254f) < EPSILON);  /* sin(60°) ≈ sqrt(3)/2 */
+  assert(vm_absf(vm_sinf(VM_PI / 2) - 1.0f) < EPSILON);        /* sin(90°) = 1 */
+  assert(vm_absf(vm_sinf(VM_PI) - 0.0f) < EPSILON);            /* sin(180°) = 0 */
+  assert(vm_absf(vm_sinf(3 * VM_PI / 2) + 1.0f) < EPSILON);    /* sin(270°) = -1 */
 }
 
 void vm_test_cosf(void)
 {
-  assert(vm_absf(vm_cosf(0.0f) - 1.0f) < EPSILON);              /* cos(0°) = 1 */
-  assert(vm_absf(vm_cosf(VM_PIf / 6) - 0.8660254f) < EPSILON);  /* cos(30°) ≈ sqrt(3)/2 */
-  assert(vm_absf(vm_cosf(VM_PIf / 4) - 0.70710678f) < EPSILON); /* cos(45°) ≈ sqrt(2)/2 */
-  assert(vm_absf(vm_cosf(VM_PIf / 3) - 0.5f) < EPSILON);        /* cos(60°) = 0.5 */
-  assert(vm_absf(vm_cosf(VM_PIf / 2)) < EPSILON);               /* cos(90°) = 0 */
-  assert(vm_absf(vm_cosf(VM_PIf) + 1.0f) < EPSILON);            /* cos(180°) = -1 */
-  assert(vm_absf(vm_cosf(3 * VM_PIf / 2)) < EPSILON);           /* cos(270°) = 0 */
+  assert(vm_absf(vm_cosf(0.0f) - 1.0f) < EPSILON);             /* cos(0°) = 1 */
+  assert(vm_absf(vm_cosf(VM_PI / 6) - 0.8660254f) < EPSILON);  /* cos(30°) ≈ sqrt(3)/2 */
+  assert(vm_absf(vm_cosf(VM_PI / 4) - 0.70710678f) < EPSILON); /* cos(45°) ≈ sqrt(2)/2 */
+  assert(vm_absf(vm_cosf(VM_PI / 3) - 0.5f) < EPSILON);        /* cos(60°) = 0.5 */
+  assert(vm_absf(vm_cosf(VM_PI / 2)) < EPSILON);               /* cos(90°) = 0 */
+  assert(vm_absf(vm_cosf(VM_PI) + 1.0f) < EPSILON);            /* cos(180°) = -1 */
+  assert(vm_absf(vm_cosf(3 * VM_PI / 2)) < EPSILON);           /* cos(270°) = 0 */
 }
 
 void vm_test_tanf(void)
 {
-  assert(vm_absf(vm_tanf(0.0f) - 0.0f) < EPSILON);              /* tan(0°) = 0 */
-  assert(vm_absf(vm_tanf(VM_PIf / 6) - 0.57735027f) < EPSILON); /* tan(30°) ≈ 1/sqrt(3) */
-  assert(vm_absf(vm_tanf(VM_PIf / 4) - 1.0f) < EPSILON);        /* tan(45°) = 1 */
-  assert(vm_absf(vm_tanf(VM_PIf / 3) - 1.7320508f) < EPSILON);  /* tan(60°) ≈ sqrt(3) */
+  assert(vm_absf(vm_tanf(0.0f) - 0.0f) < EPSILON);             /* tan(0°) = 0 */
+  assert(vm_absf(vm_tanf(VM_PI / 6) - 0.57735027f) < EPSILON); /* tan(30°) ≈ 1/sqrt(3) */
+  assert(vm_absf(vm_tanf(VM_PI / 4) - 1.0f) < EPSILON);        /* tan(45°) = 1 */
+  assert(vm_absf(vm_tanf(VM_PI / 3) - 1.7320508f) < EPSILON);  /* tan(60°) ≈ sqrt(3) */
 }
 
 void vm_test_v2(void)
@@ -142,63 +142,63 @@ void vm_test_m4x4(void)
 {
   m4x4 a = vm_m4x4_identity();
 
-  assert(a.e[VM_M4X4_AT(0,0)] == 1.0f);
-  assert(a.e[VM_M4X4_AT(1,1)] == 1.0f);
-  assert(a.e[VM_M4X4_AT(2,2)] == 1.0f);
-  assert(a.e[VM_M4X4_AT(3,3)] == 1.0f);
+  assert(a.e[VM_M4X4_AT(0, 0)] == 1.0f);
+  assert(a.e[VM_M4X4_AT(1, 1)] == 1.0f);
+  assert(a.e[VM_M4X4_AT(2, 2)] == 1.0f);
+  assert(a.e[VM_M4X4_AT(3, 3)] == 1.0f);
 }
 
 void vm_test_m4x4_perspective(void)
 {
   /* Perspective Projection */
   m4x4 p1, p2, p3;
-  m4x4 p = vm_m4x4_perspective(VM_PIf / 4, 16.0f / 9.0f, 0.1f, 100.0f);
-  float f = 1.0f / vm_tanf((VM_PIf / 4) * 0.5f);
+  m4x4 p = vm_m4x4_perspective(VM_PI / 4, 16.0f / 9.0f, 0.1f, 100.0f);
+  float f = 1.0f / vm_tanf((VM_PI / 4) * 0.5f);
   float fn = 1.0f / (0.1f - 100.0f);
 
-  assert(vm_fequal(p.e[VM_M4X4_AT(0,0)], f / (16.0f / 9.0f)));
-  assert(vm_fequal(p.e[VM_M4X4_AT(0,1)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(0,2)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(0,3)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(0, 0)], f / (16.0f / 9.0f)));
+  assert(vm_fequal(p.e[VM_M4X4_AT(0, 1)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(0, 2)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(0, 3)], 0.0f));
 
-  assert(vm_fequal(p.e[VM_M4X4_AT(1,0)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(1,1)], f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(1,2)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(1,3)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(1, 0)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(1, 1)], f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(1, 2)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(1, 3)], 0.0f));
 
-  assert(vm_fequal(p.e[VM_M4X4_AT(2,0)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(2,1)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(2,2)], (0.1f + 100.0f) * fn));
-  assert(vm_fequal(p.e[VM_M4X4_AT(2,3)], 2.0f * 0.1f * 100.0f * fn));
+  assert(vm_fequal(p.e[VM_M4X4_AT(2, 0)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(2, 1)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(2, 2)], (0.1f + 100.0f) * fn));
+  assert(vm_fequal(p.e[VM_M4X4_AT(2, 3)], 2.0f * 0.1f * 100.0f * fn));
 
-  assert(vm_fequal(p.e[VM_M4X4_AT(3,0)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(3,1)], 0.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(3,2)], -1.0f));
-  assert(vm_fequal(p.e[VM_M4X4_AT(3,3)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(3, 0)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(3, 1)], 0.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(3, 2)], -1.0f));
+  assert(vm_fequal(p.e[VM_M4X4_AT(3, 3)], 0.0f));
 
   /* 45-degree FOV, 16:9 aspect ratio, near=0.1, far=100 */
-  p1 = vm_m4x4_perspective(VM_PIf / 4, 16.0f / 9.0f, 0.1f, 100.0f);
-  assert(vm_fequal(p1.e[VM_M4X4_AT(0,0)], 1.3579952f));  /* 1 / (tan(45°/2) * (16/9)) */
-  assert(vm_fequal(p1.e[VM_M4X4_AT(1,1)], 2.4142137f));  /* 1 / tan(45°/2) */
-  assert(vm_fequal(p1.e[VM_M4X4_AT(2,2)], -1.002002f));  /* (far+near) / (near-far) */
-  assert(vm_fequal(p1.e[VM_M4X4_AT(2,3)], -0.2002002f)); /* (2*far*near) / (near-far) */
-  assert(vm_fequal(p1.e[VM_M4X4_AT(3,2)], -1.0f));
+  p1 = vm_m4x4_perspective(VM_PI / 4, 16.0f / 9.0f, 0.1f, 100.0f);
+  assert(vm_fequal(p1.e[VM_M4X4_AT(0, 0)], 1.3579952f));  /* 1 / (tan(45°/2) * (16/9)) */
+  assert(vm_fequal(p1.e[VM_M4X4_AT(1, 1)], 2.4142137f));  /* 1 / tan(45°/2) */
+  assert(vm_fequal(p1.e[VM_M4X4_AT(2, 2)], -1.002002f));  /* (far+near) / (near-far) */
+  assert(vm_fequal(p1.e[VM_M4X4_AT(2, 3)], -0.2002002f)); /* (2*far*near) / (near-far) */
+  assert(vm_fequal(p1.e[VM_M4X4_AT(3, 2)], -1.0f));
 
   /* 60-degree FOV, 4:3 aspect ratio, near=0.1, far=100 */
-  p2 = vm_m4x4_perspective(VM_PIf / 3, 4.0f / 3.0f, 0.1f, 100.0f);
-  assert(vm_fequal(p2.e[VM_M4X4_AT(0,0)], 1.2990381f)); /* 1 / (tan(60°/2) * (4/3)) */
-  assert(vm_fequal(p2.e[VM_M4X4_AT(1,1)], 1.7320508f)); /* 1 / tan(60°/2) */
-  assert(vm_fequal(p2.e[VM_M4X4_AT(2,2)], -1.002002f));
-  assert(vm_fequal(p2.e[VM_M4X4_AT(2,3)], -0.2002002f));
-  assert(vm_fequal(p2.e[VM_M4X4_AT(3,2)], -1.0f));
+  p2 = vm_m4x4_perspective(VM_PI / 3, 4.0f / 3.0f, 0.1f, 100.0f);
+  assert(vm_fequal(p2.e[VM_M4X4_AT(0, 0)], 1.2990381f)); /* 1 / (tan(60°/2) * (4/3)) */
+  assert(vm_fequal(p2.e[VM_M4X4_AT(1, 1)], 1.7320508f)); /* 1 / tan(60°/2) */
+  assert(vm_fequal(p2.e[VM_M4X4_AT(2, 2)], -1.002002f));
+  assert(vm_fequal(p2.e[VM_M4X4_AT(2, 3)], -0.2002002f));
+  assert(vm_fequal(p2.e[VM_M4X4_AT(3, 2)], -1.0f));
 
   /* 90-degree FOV, 1:1 aspect ratio, near=0.1, far=50 */
-  p3 = vm_m4x4_perspective(VM_PIf / 2, 1.0f, 0.1f, 50.0f);
-  assert(vm_fequal(p3.e[VM_M4X4_AT(0,0)], 1.0f)); /* 1 / tan(90°/2) */
-  assert(vm_fequal(p3.e[VM_M4X4_AT(1,1)], 1.0f));
-  assert(vm_fequal(p3.e[VM_M4X4_AT(2,2)], -1.004008f));  /* (far+near) / (near-far) */
-  assert(vm_fequal(p3.e[VM_M4X4_AT(2,3)], -0.2004008f)); /* (2*far*near) / (near-far) */
-  assert(vm_fequal(p3.e[VM_M4X4_AT(3,2)], -1.0f));
+  p3 = vm_m4x4_perspective(VM_PI / 2, 1.0f, 0.1f, 50.0f);
+  assert(vm_fequal(p3.e[VM_M4X4_AT(0, 0)], 1.0f)); /* 1 / tan(90°/2) */
+  assert(vm_fequal(p3.e[VM_M4X4_AT(1, 1)], 1.0f));
+  assert(vm_fequal(p3.e[VM_M4X4_AT(2, 2)], -1.004008f));  /* (far+near) / (near-far) */
+  assert(vm_fequal(p3.e[VM_M4X4_AT(2, 3)], -0.2004008f)); /* (2*far*near) / (near-far) */
+  assert(vm_fequal(p3.e[VM_M4X4_AT(3, 2)], -1.0f));
 }
 
 void vm_test_m4x4_rotation(void)
@@ -208,66 +208,66 @@ void vm_test_m4x4_rotation(void)
   v3 up = vm_v3(0.0f, 1.0f, 0.0f);
   v3 right = vm_v3(1.0f, 0.0f, 0.0f);
   m4x4 r = vm_m4x4_rotation(forward, up, right);
-  assert(r.e[VM_M4X4_AT(0,0)] == 1.0f);
-  assert(r.e[VM_M4X4_AT(0,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(0,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(0,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,1)] == 1.0f);
-  assert(r.e[VM_M4X4_AT(1,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,2)] == 1.0f);
-  assert(r.e[VM_M4X4_AT(2,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,3)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(0, 0)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(0, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(0, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(0, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 1)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(1, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 2)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(2, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 3)] == 1.0f);
 
   /* 90-degree rotation around Y-axis (Z -> X, X -> -Z) */
   forward = vm_v3(1.0f, 0.0f, 0.0f);
   up = vm_v3(0.0f, 1.0f, 0.0f);
   right = vm_v3(0.0f, 0.0f, -1.0f);
   r = vm_m4x4_rotation(forward, up, right);
-  assert(r.e[VM_M4X4_AT(0,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(0,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(0,2)] == -1.0f);
-  assert(r.e[VM_M4X4_AT(0,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,1)] == 1.0f);
-  assert(r.e[VM_M4X4_AT(1,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,0)] == 1.0f);
-  assert(r.e[VM_M4X4_AT(2,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,3)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(0, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(0, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(0, 2)] == -1.0f);
+  assert(r.e[VM_M4X4_AT(0, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 1)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(1, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 0)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(2, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 3)] == 1.0f);
 
   /* 180-degree rotation around Y-axis (Z -> -Z, X -> -X) */
   forward = vm_v3(0.0f, 0.0f, -1.0f);
   up = vm_v3(0.0f, 1.0f, 0.0f);
   right = vm_v3(-1.0f, 0.0f, 0.0f);
   r = vm_m4x4_rotation(forward, up, right);
-  assert(r.e[VM_M4X4_AT(0,0)] == -1.0f);
-  assert(r.e[VM_M4X4_AT(0,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(0,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(0,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,1)] == 1.0f);
-  assert(r.e[VM_M4X4_AT(1,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(1,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(2,2)] == -1.0f);
-  assert(r.e[VM_M4X4_AT(2,3)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,0)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,1)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,2)] == 0.0f);
-  assert(r.e[VM_M4X4_AT(3,3)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(0, 0)] == -1.0f);
+  assert(r.e[VM_M4X4_AT(0, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(0, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(0, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 1)] == 1.0f);
+  assert(r.e[VM_M4X4_AT(1, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(1, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(2, 2)] == -1.0f);
+  assert(r.e[VM_M4X4_AT(2, 3)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 0)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 1)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 2)] == 0.0f);
+  assert(r.e[VM_M4X4_AT(3, 3)] == 1.0f);
 }
 
 void vm_test_m4x4_lookAt(void)
@@ -280,25 +280,25 @@ void vm_test_m4x4_lookAt(void)
 
   m4x4 m = vm_m4x4_lookAt(eye, target, up);
 
-  assert(vm_absf(m.e[VM_M4X4_AT(0,0)]) - 1.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(0,1)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(0,2)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(0,3)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(0, 0)]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(0, 1)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(0, 2)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(0, 3)]) - 0.0f <= tolerance);
 
-  assert(vm_absf(m.e[VM_M4X4_AT(1,0)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(1,1)]) - 1.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(1,2)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(1,3)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(1, 0)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(1, 1)]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(1, 2)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(1, 3)]) - 0.0f <= tolerance);
 
-  assert(vm_absf(m.e[VM_M4X4_AT(2,0)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(2,1)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(2,2)]) - 1.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(2,3)]) - 5.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(2, 0)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(2, 1)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(2, 2)]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(2, 3)]) - 5.0f <= tolerance);
 
-  assert(vm_absf(m.e[VM_M4X4_AT(3,0)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(3,1)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(3,2)]) - 0.0f <= tolerance);
-  assert(vm_absf(m.e[VM_M4X4_AT(3,3)]) - 1.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(3, 0)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(3, 1)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(3, 2)]) - 0.0f <= tolerance);
+  assert(vm_absf(m.e[VM_M4X4_AT(3, 3)]) - 1.0f <= tolerance);
 }
 
 void vm_test_quat(void)
