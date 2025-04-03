@@ -219,13 +219,11 @@ VM_API VM_INLINE float vm_sinf(float x)
     float index, frac;
     int i, i2;
 
-    while (x < 0)
+    x -= VM_PI2 * (int)(x * (1.0f / VM_PI2));
+
+    if (x < 0)
     {
         x += VM_PI2;
-    }
-    while (x >= VM_PI2)
-    {
-        x -= VM_PI2;
     }
 
     index = x * (VM_LUT_SIZE / VM_PI2);
@@ -235,7 +233,7 @@ VM_API VM_INLINE float vm_sinf(float x)
     i &= (VM_LUT_SIZE - 1);
     i2 = (i + 1) & (VM_LUT_SIZE - 1);
 
-    return (1.0f - frac) * vm_lut[i] + frac * vm_lut[i2];
+    return (vm_lut[i] + frac * (vm_lut[i2] - vm_lut[i]));
 }
 
 VM_API VM_INLINE float vm_cosf(float x)
