@@ -102,7 +102,7 @@ VM_API VM_INLINE float vm_clampf(float value, float min, float max)
 VM_API VM_INLINE float vm_floorf(float x)
 {
     int i = (int)x;
-    return (x < 0.0f && x != i) ? (float)(i - 1) : (float)i;
+    return (x < 0.0f && x != (float) i) ? (float)(i - 1) : (float)i;
 }
 
 #ifdef __GNUC__
