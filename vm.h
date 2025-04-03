@@ -99,6 +99,12 @@ VM_API VM_INLINE float vm_clampf(float value, float min, float max)
     return (vm_maxf(min, vm_minf(max, value)));
 }
 
+VM_API VM_INLINE float vm_floorf(float x)
+{
+    int i = (int)x;
+    return (x < 0.0f && x != i) ? (float)(i - 1) : (float)i;
+}
+
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
@@ -157,28 +163,18 @@ VM_API VM_INLINE float vm_power(float base, int exp)
 
 VM_API VM_INLINE float vm_fmodf(float x, float y)
 {
-    int quotient;
-    float remainder;
+    float quotient;
 
     /* Handle special cases where y is 0 */
     if (y == 0.0f)
     {
-        return (0.0f); /* Return 0 as a placeholder for undefined behavior */
+        return (0.0f);
     }
 
     /* Compute the quotient (truncated towards zero) */
-    quotient = (int)(x / y);
+    quotient = vm_floorf(x / y);
 
-    /* Compute the remainder: x - (quotient * y) */
-    remainder = x - ((float)quotient * y);
-
-    /* Ensure the remainder has the same sign as x */
-    if ((remainder > 0 && x < 0) || (remainder < 0 && x > 0))
-    {
-        remainder += y;
-    }
-
-    return (remainder);
+    return ((-quotient * y) + x);
 }
 
 VM_API VM_INLINE float vm_cosf(float x)
@@ -189,6 +185,7 @@ VM_API VM_INLINE float vm_cosf(float x)
     float term = 1.0f;   /* Current term (starting with 1) */
     int sign = -1;       /* Alternating sign for each term */
     int i;
+    float x2;
 
     /* Reduce x to the range [-pi, pi] for better accuracy */
     x = vm_fmodf(x, VM_PIf_DOUBLED);
@@ -202,9 +199,11 @@ VM_API VM_INLINE float vm_cosf(float x)
         x += VM_PIf_DOUBLED;
     }
 
+    x2 = x * x;
+
     for (i = 1; i < terms; ++i)
     {
-        term *= (x * x) / (float)((2 * i - 1) * (2 * i)); /* Efficient calculation of each term */
+        term *= x2 / (float)((2 * i - 1) * (2 * i)); /* Efficient calculation of each term */
         result += (float)sign * (float)term;
         sign = -sign; /* Alternate the sign */
     }
@@ -218,6 +217,7 @@ VM_API VM_INLINE float vm_sinf(float x)
     float result;
     float term;
     int sign = -1;
+    float x2;
 
     int i;
 
@@ -235,10 +235,11 @@ VM_API VM_INLINE float vm_sinf(float x)
 
     result = x;
     term = x;
+    x2 = x * x;
 
     for (i = 1; i < terms; ++i)
     {
-        term *= (x * x) / (float)((2 * i) * (2 * i + 1));
+        term *= x2 / (float)((2 * i) * (2 * i + 1));
         result += (float)sign * (float)term;
         sign = -sign;
     }
