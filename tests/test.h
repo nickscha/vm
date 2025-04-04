@@ -2,6 +2,14 @@
 
 A C89 standard compliant, single header, nostdlib (no C Standard Library) simple testing framework.
 
+USAGE
+    // Use assert to break/stop program when expression is not met
+    assert(1 == 1);
+
+    // Use test as an conditional expression. If it fails it will log out the result but the program will continue
+    test(10 % 5 == 0);
+
+
 LICENSE
 
   Placed in the public domain and also MIT licensed.
@@ -18,55 +26,47 @@ LICENSE
 /* Check if using C99 or later (inline is supported) */
 #if __STDC_VERSION__ >= 199901L
 #define TEST_INLINE inline
+#define TEST_API extern
 #elif defined(__GNUC__) || defined(__clang__)
 #define TEST_INLINE __inline__
+#define TEST_API static
 #elif defined(_MSC_VER)
 #define TEST_INLINE __inline
+#define TEST_API static
 #else
 #define TEST_INLINE
+#define TEST_API static
 #endif
 
 #ifndef TEST_MAX_NUMBER_OF_TEST_RESULTS
 #define TEST_MAX_NUMBER_OF_TEST_RESULTS 1024
 #endif
 
-typedef int bool;
-
 typedef struct test_result
 {
     char *file;
     int line;
     char *expression;
-    bool conditional;
-    bool result;
+    int conditional;
+    int result;
 
 } test_result;
 
-typedef struct test_state
-{
-    unsigned int passed;
-    unsigned int failed;
-    unsigned int length;
-    test_result results[TEST_MAX_NUMBER_OF_TEST_RESULTS];
-
-} test_state;
-
-static test_state test_state_global = {0};
-
 #ifdef _WIN32
 
+#ifndef _WINDOWS_
 void *GetStdHandle(unsigned long nStdHandle);
 int SetConsoleTextAttribute(void *hConsoleOutput, unsigned short wAttributes);
+#endif
 
 #define COLOR_DEFAULT 7
 #define COLOR_BLUE 9
 #define COLOR_GREEN 10
 #define COLOR_RED 12
 
-static TEST_INLINE void set_console_color(unsigned short color)
+TEST_API TEST_INLINE void set_console_color(unsigned short color)
 {
-    void *hConsole = GetStdHandle((unsigned long)-11);
-    SetConsoleTextAttribute(hConsole, color);
+    SetConsoleTextAttribute(GetStdHandle((unsigned long)-11), color);
 }
 
 #else
@@ -84,7 +84,7 @@ static TEST_INLINE void set_console_color(int color) { (void)color; }
 #define TEST_FUNCTION_PRINTF(f, a1) (printf(f, a1))
 #endif
 
-static TEST_INLINE void test_result_print(test_result result)
+TEST_API TEST_INLINE void test_result_print(test_result *result)
 {
     char *txt_header = "TEST";
     char *txt_pass = "PASS";
@@ -97,63 +97,39 @@ static TEST_INLINE void test_result_print(test_result result)
     TEST_FUNCTION_PRINTF("%s", "] ");
 
     TEST_FUNCTION_PRINTF("%s", "[");
-    set_console_color(result.result ? COLOR_GREEN : COLOR_RED);
-    TEST_FUNCTION_PRINTF("%s", result.result ? txt_pass : txt_fail);
+    set_console_color(result->result ? COLOR_GREEN : COLOR_RED);
+    TEST_FUNCTION_PRINTF("%s", result->result ? txt_pass : txt_fail);
     set_console_color(COLOR_DEFAULT);
     TEST_FUNCTION_PRINTF("%s", "] ");
-    TEST_FUNCTION_PRINTF("%s:", result.file);
-    TEST_FUNCTION_PRINTF("%-6d", result.line);
-    TEST_FUNCTION_PRINTF(" %s\n", result.expression);
+    TEST_FUNCTION_PRINTF("%s:", result->file);
+    TEST_FUNCTION_PRINTF("%-6d", result->line);
+    TEST_FUNCTION_PRINTF(" %s\n", result->expression);
 }
 
-static TEST_INLINE void test_results_size_reached_print(void)
+TEST_API TEST_INLINE float test_absf(float x)
 {
-    char *txt_header = "TEST";
-    char *txt_fail = "WARN";
-
-    TEST_FUNCTION_PRINTF("%s", "[");
-    set_console_color(COLOR_BLUE);
-    TEST_FUNCTION_PRINTF("%s", txt_header);
-    set_console_color(COLOR_DEFAULT);
-    TEST_FUNCTION_PRINTF("%s", "] ");
-
-    TEST_FUNCTION_PRINTF("%s", "[");
-    set_console_color(COLOR_RED);
-    TEST_FUNCTION_PRINTF("%s", txt_fail);
-    set_console_color(COLOR_DEFAULT);
-    TEST_FUNCTION_PRINTF("%s", "] ");
-
-    TEST_FUNCTION_PRINTF("%s", "The maximum amount of stored results in [state.results] has reached its limit of: ");
-    TEST_FUNCTION_PRINTF("%i", TEST_MAX_NUMBER_OF_TEST_RESULTS);
-    TEST_FUNCTION_PRINTF("%s\n", " ! Please #define TEST_MAX_NUMBER_OF_TEST_RESULTS if you whish to increase this size!");
+    return (x < 0.0f ? -x : x);
 }
 
-#define test_check(exp, con)                                                     \
-    do                                                                           \
-    {                                                                            \
-        test_result result = {0};                                                \
-        result.file = __FILE__;                                                  \
-        result.line = __LINE__;                                                  \
-        result.expression = #exp;                                                \
-        result.conditional = (con);                                              \
-        result.result = (exp);                                                   \
-        result.result ? test_state_global.passed++ : test_state_global.failed++; \
-        test_result_print(result);                                               \
-        if (test_state_global.length >= TEST_MAX_NUMBER_OF_TEST_RESULTS)         \
-        {                                                                        \
-            test_results_size_reached_print();                                   \
-            test_state_global.length = 0; /* Reset test result storage */        \
-        }                                                                        \
-        test_state_global.results[test_state_global.length] = result;            \
-        test_state_global.length++;                                              \
-        if (!(con) && !result.result)                                            \
-        {                                                                        \
-            *(volatile int *)0 = 0;                                              \
-        }                                                                        \
+#define test_check(exp, con)          \
+    do                                \
+    {                                 \
+        test_result result = {0};     \
+        result.file = __FILE__;       \
+        result.line = __LINE__;       \
+        result.expression = #exp;     \
+        result.conditional = (con);   \
+        result.result = (exp);        \
+        test_result_print(&result);   \
+        if (!(con) && !result.result) \
+        {                             \
+            *(volatile int *)0 = 0;   \
+        }                             \
     } while (0)
 
 #define test(exp) test_check(exp, 1)
 #define assert(exp) test_check(exp, 0)
+#define assert_equalsf(a, b, e) test_check(test_absf((a) - (b)) < (e), 0)
 
 #endif /* TEST_H */
 
