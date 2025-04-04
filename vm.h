@@ -559,22 +559,13 @@ VM_API VM_INLINE float vm_v3_dot(v3 a, v3 b)
 VM_API VM_INLINE v3 vm_v3_normalize(v3 a)
 {
     float length_squared = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
+    float scalar = (length_squared > 0.0f) ? vm_invsqrt(length_squared) : 0.0f;
 
     v3 result;
 
-    if (length_squared > 0.0f)
-    {
-        float scalar = vm_invsqrt(length_squared);
-        result.x = a.x * scalar;
-        result.y = a.y * scalar;
-        result.z = a.z * scalar;
-    }
-    else
-    {
-        result.x = 0.0f;
-        result.y = 0.0f;
-        result.z = 0.0f;
-    }
+    result.x = a.x * scalar;
+    result.y = a.y * scalar;
+    result.z = a.z * scalar;
 
     return (result);
 }
