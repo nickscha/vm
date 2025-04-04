@@ -97,7 +97,7 @@ void vm_test_tanf(void)
 void vm_test_v2(void)
 {
   v2 a = {1.0f, 1.0f};
-  v2 b = vm_v2_one();
+  v2 b = vm_v2_one;
 
   assert(vm_v2_equals(a, b));
   assert(vm_v2_data(&a)[0] == 1.0f);
@@ -110,7 +110,7 @@ void vm_test_v2(void)
 void vm_test_v3(void)
 {
   v3 a = {1.0f, 1.0f, 1.0f};
-  v3 b = vm_v3_one();
+  v3 b = vm_v3_one;
   v3 c = {2.0f, 2.0f, 2.0f};
 
   assert(vm_v3_equals(a, b));
@@ -221,7 +221,7 @@ void vm_test_v3_cross_dot_normalize(void)
 void vm_test_v4(void)
 {
   v4 a = {1.0f, 1.0f, 1.0f, 1.0f};
-  v4 b = vm_v4_one();
+  v4 b = vm_v4_one;
 
   assert(vm_v4_equals(a, b));
   assert(vm_v4_data(&a)[0] == 1.0f);
@@ -248,12 +248,17 @@ void vm_test_v4(void)
 
 void vm_test_m4x4(void)
 {
-  m4x4 a = vm_m4x4_identity();
+  m4x4 a = vm_m4x4_identity;
+  m4x4 b = vm_m4x4_zero;
 
   assert(a.e[VM_M4X4_AT(0, 0)] == 1.0f);
   assert(a.e[VM_M4X4_AT(1, 1)] == 1.0f);
   assert(a.e[VM_M4X4_AT(2, 2)] == 1.0f);
   assert(a.e[VM_M4X4_AT(3, 3)] == 1.0f);
+  assert(b.e[VM_M4X4_AT(0, 0)] == 0.0f);
+  assert(b.e[VM_M4X4_AT(1, 1)] == 0.0f);
+  assert(b.e[VM_M4X4_AT(2, 2)] == 0.0f);
+  assert(b.e[VM_M4X4_AT(3, 3)] == 0.0f);
 }
 
 void vm_test_m4x4_perspective(void)

@@ -15,7 +15,7 @@ int main() {
     int width = 800;
     int height = 600;
 
-    v3 look_at_pos = vm_v3_zero();              /* Where should the camera look at */
+    v3 look_at_pos = vm_v3_zero;              /* Where should the camera look at */
     v3 up = vm_v3(0.0f, 1.0f, 0.0f);            /* World/Camera up */
     v3 cam_position = vm_v3(0.0f, 0.0f, 13.0f); /* Camera set a little bit back */
     float cam_fov = 90.0f;
@@ -29,11 +29,11 @@ int main() {
     */
     frustum frustum_planes = vm_frustum_extract_planes(projection_view);
 
-    v3 cube1_position = vm_v3_zero();
-    v3 cube1_dimensions = vm_v3_one(); /* No Scaling */
+    v3 cube1_position = vm_v3_zero;
+    v3 cube1_dimensions = vm_v3_one; /* No Scaling */
 
     v3 cube2_position = vm_v3(100.0f, 0.0f, 0.0f); /* Cube is set far away to the left */
-    v3 cube2_dimensions = vm_v3_one();             /* No Scaling */
+    v3 cube2_dimensions = vm_v3_one;             /* No Scaling */
 
     /* The cube is rendered inside the camera frustum */
     assert(vm_frustum_is_cube_in(frustum_planes, cube1_position, cube1_dimensions, 0.15f));
