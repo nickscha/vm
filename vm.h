@@ -1094,7 +1094,8 @@ VM_API VM_INLINE quat vm_quat_rotate(v3 axis, float angle)
 
 VM_API VM_INLINE quat vm_quat_normalize(quat a)
 {
-    float scalar = vm_invsqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z) + (a.w * a.w));
+    float length_squared = (a.x * a.x) + (a.y * a.y) + (a.z * a.z) + (a.w * a.w);
+    float scalar = vm_invsqrt(length_squared);
 
     quat result;
 
@@ -1279,48 +1280,64 @@ VM_API VM_INLINE frustum vm_frustum_extract_planes(m4x4 projection_view)
     float a32 = projection_view.e[VM_M4X4_AT(3, 2)];
     float a33 = projection_view.e[VM_M4X4_AT(3, 3)];
 
+    float e00 = projection_view.e[VM_M4X4_AT(0, 0)];
+    float e01 = projection_view.e[VM_M4X4_AT(0, 1)];
+    float e02 = projection_view.e[VM_M4X4_AT(0, 2)];
+    float e03 = projection_view.e[VM_M4X4_AT(0, 3)];
+
+    float e10 = projection_view.e[VM_M4X4_AT(1, 0)];
+    float e11 = projection_view.e[VM_M4X4_AT(1, 1)];
+    float e12 = projection_view.e[VM_M4X4_AT(1, 2)];
+    float e13 = projection_view.e[VM_M4X4_AT(1, 3)];
+
+    float e20 = projection_view.e[VM_M4X4_AT(2, 0)];
+    float e21 = projection_view.e[VM_M4X4_AT(2, 1)];
+    float e22 = projection_view.e[VM_M4X4_AT(2, 2)];
+    float e23 = projection_view.e[VM_M4X4_AT(2, 3)];
+
     /* Left plane */
-    result.leftPlane.x = a30 + projection_view.e[VM_M4X4_AT(0, 0)];
-    result.leftPlane.y = a31 + projection_view.e[VM_M4X4_AT(0, 1)];
-    result.leftPlane.z = a32 + projection_view.e[VM_M4X4_AT(0, 2)];
-    result.leftPlane.w = a33 + projection_view.e[VM_M4X4_AT(0, 3)];
+    result.leftPlane.x = a30 + e00;
+    result.leftPlane.y = a31 + e01;
+    result.leftPlane.z = a32 + e02;
+    result.leftPlane.w = a33 + e03;
 
     /* Right plane */
-    result.rightPlane.x = a30 - projection_view.e[VM_M4X4_AT(0, 0)];
-    result.rightPlane.y = a31 - projection_view.e[VM_M4X4_AT(0, 1)];
-    result.rightPlane.z = a32 - projection_view.e[VM_M4X4_AT(0, 2)];
-    result.rightPlane.w = a33 - projection_view.e[VM_M4X4_AT(0, 3)];
+    result.rightPlane.x = a30 - e00;
+    result.rightPlane.y = a31 - e01;
+    result.rightPlane.z = a32 - e02;
+    result.rightPlane.w = a33 - e03;
 
     /* Bottom plane */
-    result.bottomPlane.x = a30 + projection_view.e[VM_M4X4_AT(1, 0)];
-    result.bottomPlane.y = a31 + projection_view.e[VM_M4X4_AT(1, 1)];
-    result.bottomPlane.z = a32 + projection_view.e[VM_M4X4_AT(1, 2)];
-    result.bottomPlane.w = a33 + projection_view.e[VM_M4X4_AT(1, 3)];
+    result.bottomPlane.x = a30 + e10;
+    result.bottomPlane.y = a31 + e11;
+    result.bottomPlane.z = a32 + e12;
+    result.bottomPlane.w = a33 + e13;
 
     /* Top plane */
-    result.topPlane.x = a30 - projection_view.e[VM_M4X4_AT(1, 0)];
-    result.topPlane.y = a31 - projection_view.e[VM_M4X4_AT(1, 1)];
-    result.topPlane.z = a32 - projection_view.e[VM_M4X4_AT(1, 2)];
-    result.topPlane.w = a33 - projection_view.e[VM_M4X4_AT(1, 3)];
+    result.topPlane.x = a30 - e10;
+    result.topPlane.y = a31 - e11;
+    result.topPlane.z = a32 - e12;
+    result.topPlane.w = a33 - e13;
 
     /* Near plane */
-    result.nearPlane.x = a30 + projection_view.e[VM_M4X4_AT(2, 0)];
-    result.nearPlane.y = a31 + projection_view.e[VM_M4X4_AT(2, 1)];
-    result.nearPlane.z = a32 + projection_view.e[VM_M4X4_AT(2, 2)];
-    result.nearPlane.w = a33 + projection_view.e[VM_M4X4_AT(2, 3)];
+    result.nearPlane.x = a30 + e20;
+    result.nearPlane.y = a31 + e21;
+    result.nearPlane.z = a32 + e22;
+    result.nearPlane.w = a33 + e23;
 
     /* Far plane */
-    result.farPlane.x = a30 - projection_view.e[VM_M4X4_AT(2, 0)];
-    result.farPlane.y = a31 - projection_view.e[VM_M4X4_AT(2, 1)];
-    result.farPlane.z = a32 - projection_view.e[VM_M4X4_AT(2, 2)];
-    result.farPlane.w = a33 - projection_view.e[VM_M4X4_AT(2, 3)];
+    result.farPlane.x = a30 - e20;
+    result.farPlane.y = a31 - e21;
+    result.farPlane.z = a32 - e22;
+    result.farPlane.w = a33 - e23;
 
     frustum_data = vm_frustum_data(&result);
 
     /* Normalize planes */
     for (i = 0; i < VM_FRUSTUM_PLANE_SIZE; ++i)
     {
-        float scalar = vm_invsqrt((frustum_data[i].x * frustum_data[i].x) + (frustum_data[i].y * frustum_data[i].y) + (frustum_data[i].z * frustum_data[i].z));
+        float length_squared = (frustum_data[i].x * frustum_data[i].x) + (frustum_data[i].y * frustum_data[i].y) + (frustum_data[i].z * frustum_data[i].z);
+        float scalar = vm_invsqrt(length_squared);
 
         frustum_data[i].x = frustum_data[i].x * scalar;
         frustum_data[i].y = frustum_data[i].y * scalar;
