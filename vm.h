@@ -558,13 +558,13 @@ VM_API VM_INLINE float vm_v3_dot(v3 a, v3 b)
 
 VM_API VM_INLINE v3 vm_v3_normalize(v3 a)
 {
-    float length = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
+    float length_squared = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
 
     v3 result;
 
-    if (length > 0.0f)
+    if (length_squared > 0.0f)
     {
-        float scalar = vm_invsqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z));
+        float scalar = vm_invsqrt(length_squared);
         result.x = a.x * scalar;
         result.y = a.y * scalar;
         result.z = a.z * scalar;
@@ -607,7 +607,7 @@ typedef struct v4
     float y;
     float z;
     float w;
-} v4;
+} VM_ALIGN_16 v4;
 
 VM_API VM_INLINE v4 vm_v4(float x, float y, float z, float w)
 {
@@ -834,10 +834,15 @@ VM_API VM_INLINE m4x4 vm_m4x4_mul(m4x4 a, m4x4 b)
     int i = 0;
     for (; i < 4; ++i)
     {
-        result.e[VM_M4X4_AT(i, 0)] = a.e[VM_M4X4_AT(i, 0)] * b.e[VM_M4X4_AT(0, 0)] + a.e[VM_M4X4_AT(i, 1)] * b.e[VM_M4X4_AT(1, 0)] + a.e[VM_M4X4_AT(i, 2)] * b.e[VM_M4X4_AT(2, 0)] + a.e[VM_M4X4_AT(i, 3)] * b.e[VM_M4X4_AT(3, 0)];
-        result.e[VM_M4X4_AT(i, 1)] = a.e[VM_M4X4_AT(i, 0)] * b.e[VM_M4X4_AT(0, 1)] + a.e[VM_M4X4_AT(i, 1)] * b.e[VM_M4X4_AT(1, 1)] + a.e[VM_M4X4_AT(i, 2)] * b.e[VM_M4X4_AT(2, 1)] + a.e[VM_M4X4_AT(i, 3)] * b.e[VM_M4X4_AT(3, 1)];
-        result.e[VM_M4X4_AT(i, 2)] = a.e[VM_M4X4_AT(i, 0)] * b.e[VM_M4X4_AT(0, 2)] + a.e[VM_M4X4_AT(i, 1)] * b.e[VM_M4X4_AT(1, 2)] + a.e[VM_M4X4_AT(i, 2)] * b.e[VM_M4X4_AT(2, 2)] + a.e[VM_M4X4_AT(i, 3)] * b.e[VM_M4X4_AT(3, 2)];
-        result.e[VM_M4X4_AT(i, 3)] = a.e[VM_M4X4_AT(i, 0)] * b.e[VM_M4X4_AT(0, 3)] + a.e[VM_M4X4_AT(i, 1)] * b.e[VM_M4X4_AT(1, 3)] + a.e[VM_M4X4_AT(i, 2)] * b.e[VM_M4X4_AT(2, 3)] + a.e[VM_M4X4_AT(i, 3)] * b.e[VM_M4X4_AT(3, 3)];
+        float a0 = a.e[VM_M4X4_AT(i, 0)];
+        float a1 = a.e[VM_M4X4_AT(i, 1)];
+        float a2 = a.e[VM_M4X4_AT(i, 2)];
+        float a3 = a.e[VM_M4X4_AT(i, 3)];
+
+        result.e[VM_M4X4_AT(i, 0)] = a0 * b.e[VM_M4X4_AT(0, 0)] + a1 * b.e[VM_M4X4_AT(1, 0)] + a2 * b.e[VM_M4X4_AT(2, 0)] + a3 * b.e[VM_M4X4_AT(3, 0)];
+        result.e[VM_M4X4_AT(i, 1)] = a0 * b.e[VM_M4X4_AT(0, 1)] + a1 * b.e[VM_M4X4_AT(1, 1)] + a2 * b.e[VM_M4X4_AT(2, 1)] + a3 * b.e[VM_M4X4_AT(3, 1)];
+        result.e[VM_M4X4_AT(i, 2)] = a0 * b.e[VM_M4X4_AT(0, 2)] + a1 * b.e[VM_M4X4_AT(1, 2)] + a2 * b.e[VM_M4X4_AT(2, 2)] + a3 * b.e[VM_M4X4_AT(3, 2)];
+        result.e[VM_M4X4_AT(i, 3)] = a0 * b.e[VM_M4X4_AT(0, 3)] + a1 * b.e[VM_M4X4_AT(1, 3)] + a2 * b.e[VM_M4X4_AT(2, 3)] + a3 * b.e[VM_M4X4_AT(3, 3)];
     }
 
     return (result);
@@ -967,14 +972,14 @@ VM_API VM_INLINE m4x4 vm_m4x4_scalef(m4x4 src, float factor)
 VM_API VM_INLINE m4x4 vm_m4x4_swap(m4x4 src)
 {
     m4x4 result;
-    int i, j;
+    int i;
 
     for (i = 0; i < 4; ++i)
     {
-        for (j = 0; j < 4; ++j)
-        {
-            result.e[VM_M4X4_AT(i, j)] = src.e[VM_M4X4_AT(j, i)];
-        }
+        result.e[VM_M4X4_AT(i, 0)] = src.e[VM_M4X4_AT(0, i)];
+        result.e[VM_M4X4_AT(i, 1)] = src.e[VM_M4X4_AT(1, i)];
+        result.e[VM_M4X4_AT(i, 2)] = src.e[VM_M4X4_AT(2, i)];
+        result.e[VM_M4X4_AT(i, 3)] = src.e[VM_M4X4_AT(3, i)];
     }
 
     return (result);
