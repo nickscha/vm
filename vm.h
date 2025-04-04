@@ -1283,41 +1283,46 @@ VM_API VM_INLINE frustum vm_frustum_extract_planes(m4x4 projection_view)
     frustum result;
     v4 *frustum_data;
 
+    float a30 = projection_view.e[VM_M4X4_AT(3, 0)];
+    float a31 = projection_view.e[VM_M4X4_AT(3, 1)];
+    float a32 = projection_view.e[VM_M4X4_AT(3, 2)];
+    float a33 = projection_view.e[VM_M4X4_AT(3, 3)];
+
     /* Left plane */
-    result.leftPlane.x = projection_view.e[VM_M4X4_AT(3, 0)] + projection_view.e[VM_M4X4_AT(0, 0)];
-    result.leftPlane.y = projection_view.e[VM_M4X4_AT(3, 1)] + projection_view.e[VM_M4X4_AT(0, 1)];
-    result.leftPlane.z = projection_view.e[VM_M4X4_AT(3, 2)] + projection_view.e[VM_M4X4_AT(0, 2)];
-    result.leftPlane.w = projection_view.e[VM_M4X4_AT(3, 3)] + projection_view.e[VM_M4X4_AT(0, 3)];
+    result.leftPlane.x = a30 + projection_view.e[VM_M4X4_AT(0, 0)];
+    result.leftPlane.y = a31 + projection_view.e[VM_M4X4_AT(0, 1)];
+    result.leftPlane.z = a32 + projection_view.e[VM_M4X4_AT(0, 2)];
+    result.leftPlane.w = a33 + projection_view.e[VM_M4X4_AT(0, 3)];
 
     /* Right plane */
-    result.rightPlane.x = projection_view.e[VM_M4X4_AT(3, 0)] - projection_view.e[VM_M4X4_AT(0, 0)];
-    result.rightPlane.y = projection_view.e[VM_M4X4_AT(3, 1)] - projection_view.e[VM_M4X4_AT(0, 1)];
-    result.rightPlane.z = projection_view.e[VM_M4X4_AT(3, 2)] - projection_view.e[VM_M4X4_AT(0, 2)];
-    result.rightPlane.w = projection_view.e[VM_M4X4_AT(3, 3)] - projection_view.e[VM_M4X4_AT(0, 3)];
+    result.rightPlane.x = a30 - projection_view.e[VM_M4X4_AT(0, 0)];
+    result.rightPlane.y = a31 - projection_view.e[VM_M4X4_AT(0, 1)];
+    result.rightPlane.z = a32 - projection_view.e[VM_M4X4_AT(0, 2)];
+    result.rightPlane.w = a33 - projection_view.e[VM_M4X4_AT(0, 3)];
 
     /* Bottom plane */
-    result.bottomPlane.x = projection_view.e[VM_M4X4_AT(3, 0)] + projection_view.e[VM_M4X4_AT(1, 0)];
-    result.bottomPlane.y = projection_view.e[VM_M4X4_AT(3, 1)] + projection_view.e[VM_M4X4_AT(1, 1)];
-    result.bottomPlane.z = projection_view.e[VM_M4X4_AT(3, 2)] + projection_view.e[VM_M4X4_AT(1, 2)];
-    result.bottomPlane.w = projection_view.e[VM_M4X4_AT(3, 3)] + projection_view.e[VM_M4X4_AT(1, 3)];
+    result.bottomPlane.x = a30 + projection_view.e[VM_M4X4_AT(1, 0)];
+    result.bottomPlane.y = a31 + projection_view.e[VM_M4X4_AT(1, 1)];
+    result.bottomPlane.z = a32 + projection_view.e[VM_M4X4_AT(1, 2)];
+    result.bottomPlane.w = a33 + projection_view.e[VM_M4X4_AT(1, 3)];
 
     /* Top plane */
-    result.topPlane.x = projection_view.e[VM_M4X4_AT(3, 0)] - projection_view.e[VM_M4X4_AT(1, 0)];
-    result.topPlane.y = projection_view.e[VM_M4X4_AT(3, 1)] - projection_view.e[VM_M4X4_AT(1, 1)];
-    result.topPlane.z = projection_view.e[VM_M4X4_AT(3, 2)] - projection_view.e[VM_M4X4_AT(1, 2)];
-    result.topPlane.w = projection_view.e[VM_M4X4_AT(3, 3)] - projection_view.e[VM_M4X4_AT(1, 3)];
+    result.topPlane.x = a30 - projection_view.e[VM_M4X4_AT(1, 0)];
+    result.topPlane.y = a31 - projection_view.e[VM_M4X4_AT(1, 1)];
+    result.topPlane.z = a32 - projection_view.e[VM_M4X4_AT(1, 2)];
+    result.topPlane.w = a33 - projection_view.e[VM_M4X4_AT(1, 3)];
 
     /* Near plane */
-    result.nearPlane.x = projection_view.e[VM_M4X4_AT(3, 0)] + projection_view.e[VM_M4X4_AT(2, 0)];
-    result.nearPlane.y = projection_view.e[VM_M4X4_AT(3, 1)] + projection_view.e[VM_M4X4_AT(2, 1)];
-    result.nearPlane.z = projection_view.e[VM_M4X4_AT(3, 2)] + projection_view.e[VM_M4X4_AT(2, 2)];
-    result.nearPlane.w = projection_view.e[VM_M4X4_AT(3, 3)] + projection_view.e[VM_M4X4_AT(2, 3)];
+    result.nearPlane.x = a30 + projection_view.e[VM_M4X4_AT(2, 0)];
+    result.nearPlane.y = a31 + projection_view.e[VM_M4X4_AT(2, 1)];
+    result.nearPlane.z = a32 + projection_view.e[VM_M4X4_AT(2, 2)];
+    result.nearPlane.w = a33 + projection_view.e[VM_M4X4_AT(2, 3)];
 
     /* Far plane */
-    result.farPlane.x = projection_view.e[VM_M4X4_AT(3, 0)] - projection_view.e[VM_M4X4_AT(2, 0)];
-    result.farPlane.y = projection_view.e[VM_M4X4_AT(3, 1)] - projection_view.e[VM_M4X4_AT(2, 1)];
-    result.farPlane.z = projection_view.e[VM_M4X4_AT(3, 2)] - projection_view.e[VM_M4X4_AT(2, 2)];
-    result.farPlane.w = projection_view.e[VM_M4X4_AT(3, 3)] - projection_view.e[VM_M4X4_AT(2, 3)];
+    result.farPlane.x = a30 - projection_view.e[VM_M4X4_AT(2, 0)];
+    result.farPlane.y = a31 - projection_view.e[VM_M4X4_AT(2, 1)];
+    result.farPlane.z = a32 - projection_view.e[VM_M4X4_AT(2, 2)];
+    result.farPlane.w = a33 - projection_view.e[VM_M4X4_AT(2, 3)];
 
     frustum_data = vm_frustum_data(&result);
 
@@ -1339,10 +1344,10 @@ VM_API VM_INLINE int vm_frustum_is_point_in(frustum frustum, v3 point)
 {
     int i;
     v4 *frustum_data = vm_frustum_data(&frustum);
+    v4 pointTarget = vm_v4(point.x, point.y, point.z, 1.0f);
 
     for (i = 0; i < VM_FRUSTUM_PLANE_SIZE; ++i)
     {
-        v4 pointTarget = vm_v4(point.x, point.y, point.z, 1.0f);
         if (vm_v4_dot(frustum_data[i], pointTarget) < 0)
         {
             return (0); /* Point is outside */
@@ -1378,7 +1383,6 @@ VM_API VM_INLINE int vm_frustum_is_cube_in(frustum frustum, v3 center, v3 dimens
     corners[6] = vm_v3(subHalfX, addHalfY, addHalfZ);
     corners[7] = vm_v3(addHalfX, addHalfY, addHalfZ);
 
-    /* Check each plane of the frustum */
     for (i = 0; i < VM_FRUSTUM_PLANE_SIZE; ++i)
     {
         const v4 *plane = &frustum_data[i];
