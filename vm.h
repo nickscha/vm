@@ -394,6 +394,12 @@ typedef struct v3
 
 static const v3 vm_v3_zero = {0.0f, 0.0f, 0.0f};
 static const v3 vm_v3_one = {1.0f, 1.0f, 1.0f};
+static const v3 vm_v3_forward = {0.0f, 0.0f, 1.0f};
+static const v3 vm_v3_back = {0.0f, 0.0f, -1.0f};
+static const v3 vm_v3_up = {0.0f, 1.0f, 0.0f};
+static const v3 vm_v3_down = {0.0f, -1.0f, 0.0f};
+static const v3 vm_v3_left = {-1.0f, 0.0f, 0.0};
+static const v3 vm_v3_right = {1.0f, 0.0f, 0.0f};
 
 VM_API VM_INLINE v3 vm_v3(float x, float y, float z)
 {
@@ -962,6 +968,7 @@ typedef v4 quat;
 
 static const quat vm_qaut_zero = {0.0f, 0.0f, 0.0f, 0.0f};
 static const quat vm_quat_one = {1.0f, 1.0f, 1.0f, 1.0f};
+static const quat vm_quat_rot = {0.0f, 0.0f, 0.0f, 1.0f};
 
 VM_API VM_INLINE quat vm_quat(float x, float y, float z, float w)
 {
@@ -1125,32 +1132,32 @@ VM_API VM_INLINE v3 vm_v3_rotate(v3 a, quat rotation)
 
 VM_API VM_INLINE v3 vm_quat_forward(quat rotation)
 {
-    return (vm_v3_rotate(vm_v3(0.0f, 0.0f, 1.0f), rotation));
+    return (vm_v3_rotate(vm_v3_forward, rotation));
 }
 
 VM_API VM_INLINE v3 vm_quat_back(quat rotation)
 {
-    return (vm_v3_rotate(vm_v3(0.0f, 0.0f, -1.0f), rotation));
+    return (vm_v3_rotate(vm_v3_back, rotation));
 }
 
 VM_API VM_INLINE v3 vm_quat_up(quat rotation)
 {
-    return (vm_v3_rotate(vm_v3(0.0f, 1.0f, 0.0f), rotation));
+    return (vm_v3_rotate(vm_v3_up, rotation));
 }
 
 VM_API VM_INLINE v3 vm_quat_down(quat rotation)
 {
-    return (vm_v3_rotate(vm_v3(0.0f, -1.0f, 0.0f), rotation));
-}
-
-VM_API VM_INLINE v3 vm_quat_right(quat rotation)
-{
-    return (vm_v3_rotate(vm_v3(1.0f, 0.0f, 0.0f), rotation));
+    return (vm_v3_rotate(vm_v3_down, rotation));
 }
 
 VM_API VM_INLINE v3 vm_quat_left(quat rotation)
 {
-    return (vm_v3_rotate(vm_v3(-1.0f, 0.0f, 0.0f), rotation));
+    return (vm_v3_rotate(vm_v3_left, rotation));
+}
+
+VM_API VM_INLINE v3 vm_quat_right(quat rotation)
+{
+    return (vm_v3_rotate(vm_v3_right, rotation));
 }
 
 #define VM_FRUSTUM_PLANE_SIZE 6
@@ -1340,7 +1347,7 @@ VM_API VM_INLINE transformation vm_tranformation_init(void)
 {
     transformation result = {0};
     result.position = vm_v3_zero;
-    result.rotation = vm_quat(0.0f, 0.0f, 0.0f, 1.0f);
+    result.rotation = vm_quat_rot;
     result.scale = vm_v3_one;
     return (result);
 }
