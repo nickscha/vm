@@ -1,10 +1,10 @@
 #ifndef WIN32_PRINT_H
 #define WIN32_PRINT_H
 
-#define STD_OUTPUT_HANDLE ((unsigned long)-11)
-
+#ifndef _WINDOWS_
 void *GetStdHandle(unsigned long nStdHandle);
 int WriteConsoleA(void *hConsoleOutput, const void *lpBuffer, unsigned long nNumberOfCharsToWrite, unsigned long *lpNumberOfCharsWritten, void *lpReserved);
+#endif
 
 unsigned long win32_lstrlen(const char *str)
 {
@@ -19,8 +19,7 @@ unsigned long win32_lstrlen(const char *str)
 void win32_printf(const char *str)
 {
     unsigned long written;
-    void *hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    WriteConsoleA(hConsole, str, win32_lstrlen(str), &written, (void *)0);
+    WriteConsoleA(GetStdHandle((unsigned long)-11), str, win32_lstrlen(str), &written, (void *)0);
 }
 
 #endif /* WIN32_PRINT_H */
