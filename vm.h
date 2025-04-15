@@ -958,6 +958,30 @@ VM_API VM_INLINE m4x4 vm_m4x4_lookAt(v3 eye, v3 target, v3 up)
     return (result);
 }
 
+VM_API VM_INLINE m4x4 vm_m4x4_lookAt_model(v3 eye, v3 target, v3 up)
+{
+    v3 f = vm_v3_normalize(vm_v3_sub(target, eye));
+    v3 r = vm_v3_normalize(vm_v3_cross(up, f));
+    v3 u = vm_v3_cross(f, r);
+
+    m4x4 result = vm_m4x4_identity;
+
+    result.e[VM_M4X4_AT(0, 0)] = r.x;
+    result.e[VM_M4X4_AT(1, 0)] = r.y;
+    result.e[VM_M4X4_AT(2, 0)] = r.z;
+    result.e[VM_M4X4_AT(0, 1)] = u.x;
+    result.e[VM_M4X4_AT(1, 1)] = u.y;
+    result.e[VM_M4X4_AT(2, 1)] = u.z;
+    result.e[VM_M4X4_AT(0, 2)] = f.x;
+    result.e[VM_M4X4_AT(1, 2)] = f.y;
+    result.e[VM_M4X4_AT(2, 2)] = f.z;
+    result.e[VM_M4X4_AT(0, 3)] = eye.x;
+    result.e[VM_M4X4_AT(1, 3)] = eye.y;
+    result.e[VM_M4X4_AT(2, 3)] = eye.z;
+
+    return (result);
+}
+
 /* #############################################################################
  * # Quaternion FUNCTIONS
  * ######################################################################## #####
