@@ -982,6 +982,59 @@ VM_API VM_INLINE m4x4 vm_m4x4_lookAt_model(v3 eye, v3 target, v3 up)
     return (result);
 }
 
+VM_API VM_INLINE m4x4 vm_m4x4_inverse(m4x4 m)
+{
+    m4x4 inv;
+    float *e = m.e;
+    float *o = inv.e;
+
+    float a0 = e[0] * e[5] - e[1] * e[4];
+    float a1 = e[0] * e[6] - e[2] * e[4];
+    float a2 = e[0] * e[7] - e[3] * e[4];
+    float a3 = e[1] * e[6] - e[2] * e[5];
+    float a4 = e[1] * e[7] - e[3] * e[5];
+    float a5 = e[2] * e[7] - e[3] * e[6];
+    float b0 = e[8] * e[13] - e[9] * e[12];
+    float b1 = e[8] * e[14] - e[10] * e[12];
+    float b2 = e[8] * e[15] - e[11] * e[12];
+    float b3 = e[9] * e[14] - e[10] * e[13];
+    float b4 = e[9] * e[15] - e[11] * e[13];
+    float b5 = e[10] * e[15] - e[11] * e[14];
+
+    float det = a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0;
+
+    float inv_det;
+
+    if (det == 0.0f)
+    {
+        return (vm_m4x4_zero);
+    }
+
+    inv_det = 1.0f / det;
+
+    o[0] = (+e[5] * b5 - e[6] * b4 + e[7] * b3) * inv_det;
+    o[1] = (-e[1] * b5 + e[2] * b4 - e[3] * b3) * inv_det;
+    o[2] = (+e[13] * a5 - e[14] * a4 + e[15] * a3) * inv_det;
+    o[3] = (-e[9] * a5 + e[10] * a4 - e[11] * a3) * inv_det;
+
+    o[4] = (-e[4] * b5 + e[6] * b2 - e[7] * b1) * inv_det;
+    o[5] = (+e[0] * b5 - e[2] * b2 + e[3] * b1) * inv_det;
+    o[6] = (-e[12] * a5 + e[14] * a2 - e[15] * a1) * inv_det;
+    o[7] = (+e[8] * a5 - e[10] * a2 + e[11] * a1) * inv_det;
+
+    o[8] = (+e[4] * b4 - e[5] * b2 + e[7] * b0) * inv_det;
+    o[9] = (-e[0] * b4 + e[1] * b2 - e[3] * b0) * inv_det;
+    o[10] = (+e[12] * a4 - e[13] * a2 + e[15] * a0) * inv_det;
+    o[11] = (-e[8] * a4 + e[9] * a2 - e[11] * a0) * inv_det;
+
+    o[12] = (-e[4] * b3 + e[5] * b1 - e[6] * b0) * inv_det;
+    o[13] = (+e[0] * b3 - e[1] * b1 + e[2] * b0) * inv_det;
+    o[14] = (-e[12] * a3 + e[13] * a1 - e[14] * a0) * inv_det;
+    o[15] = (+e[8] * a3 - e[9] * a1 + e[10] * a0) * inv_det;
+
+    return (inv);
+}
+
 /* #############################################################################
  * # Quaternion FUNCTIONS
  * ######################################################################## #####

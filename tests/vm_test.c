@@ -414,6 +414,32 @@ void vm_test_m4x4_lookAt(void)
   assert(vm_absf(m.e[VM_M4X4_AT(3, 3)]) - 1.0f <= tolerance);
 }
 
+void vm_test_m4x4_inverse(void)
+{
+  /* 90-degree Y rotation matrix (Z -> X, X -> -Z) */
+  v3 forward = vm_v3(1.0f, 0.0f, 0.0f);
+  v3 up = vm_v3(0.0f, 1.0f, 0.0f);
+  v3 right = vm_v3(0.0f, 0.0f, -1.0f);
+  m4x4 m = vm_m4x4_rotation(forward, up, right);
+
+  m4x4 inv = vm_m4x4_inverse(m);
+  m4x4 identity = vm_m4x4_mul(m, inv);
+
+  int row;
+  int col;
+
+  /* Assert the result is approximately identity */
+  for (row = 0; row < 4; ++row)
+  {
+    for (col = 0; col < 4; ++col)
+    {
+      float expected = (row == col) ? 1.0f : 0.0f;
+      float actual = identity.e[VM_M4X4_AT(row, col)];
+      assert(vm_absf(actual - expected) < 0.0001f);
+    }
+  }
+}
+
 void vm_test_quat(void)
 {
   quat a = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -452,6 +478,7 @@ int main(void)
   vm_test_m4x4_perspective();
   vm_test_m4x4_rotation();
   vm_test_m4x4_lookAt();
+  vm_test_m4x4_inverse();
   vm_test_quat();
   vm_test_frustum();
   vm_test_transformation();
