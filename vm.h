@@ -412,6 +412,17 @@ VM_API VM_INLINE v3 vm_v3(float x, float y, float z)
     return (result);
 }
 
+VM_API VM_INLINE v3 vm_v3f(float c)
+{
+    v3 result;
+
+    result.x = c;
+    result.y = c;
+    result.z = c;
+
+    return (result);
+}
+
 VM_API VM_INLINE float *vm_v3_data(v3 *a)
 {
     return ((float *)a);

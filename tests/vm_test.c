@@ -112,8 +112,10 @@ void vm_test_v3(void)
   v3 a = {1.0f, 1.0f, 1.0f};
   v3 b = vm_v3_one;
   v3 c = {2.0f, 2.0f, 2.0f};
+  v3 d = vm_v3f(3.0f);
 
   assert(vm_v3_equals(a, b));
+  assert(vm_v3_equals(d, vm_v3(3.0f, 3.0f, 3.0f)));
   assert(vm_v3_data(&a)[0] == 1.0f);
   assert(vm_v3_data(&a)[1] == 1.0f);
   assert(vm_v3_data(&a)[2] == 1.0f);
