@@ -284,6 +284,16 @@ VM_API VM_INLINE v2 vm_v2(float x, float y)
     return (result);
 }
 
+VM_API VM_INLINE v2 vm_v2f(float c)
+{
+    v2 result;
+
+    result.x = c;
+    result.y = c;
+
+    return (result);
+}
+
 VM_API VM_INLINE float *vm_v2_data(v2 *a)
 {
     return ((float *)a);

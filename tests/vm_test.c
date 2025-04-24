@@ -98,8 +98,10 @@ void vm_test_v2(void)
 {
   v2 a = {1.0f, 1.0f};
   v2 b = vm_v2_one;
+  v2 c = vm_v2f(3.0f);
 
   assert(vm_v2_equals(a, b));
+  assert(vm_v2_equals(c, vm_v2(3.0f, 3.0f)));
   assert(vm_v2_data(&a)[0] == 1.0f);
   assert(vm_v2_data(&a)[1] == 1.0f);
   assert(vm_v2_add(a, b).x == 2.0f);
