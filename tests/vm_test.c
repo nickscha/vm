@@ -226,8 +226,10 @@ void vm_test_v4(void)
 {
   v4 a = {1.0f, 1.0f, 1.0f, 1.0f};
   v4 b = vm_v4_one;
+  v4 c = vm_v4f(3.0f);
 
   assert(vm_v4_equals(a, b));
+  assert(vm_v4_equals(c, vm_v4(3.0f, 3.0f, 3.0f, 3.0f)));
   assert(vm_v4_data(&a)[0] == 1.0f);
   assert(vm_v4_data(&a)[1] == 1.0f);
   assert(vm_v4_data(&a)[2] == 1.0f);

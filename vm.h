@@ -606,6 +606,18 @@ VM_API VM_INLINE v4 vm_v4(float x, float y, float z, float w)
     return (result);
 }
 
+VM_API VM_INLINE v4 vm_v4f(float c)
+{
+    v4 result;
+
+    result.x = c;
+    result.y = c;
+    result.z = c;
+    result.w = c;
+
+    return (result);
+}
+
 VM_API VM_INLINE float *vm_v4_data(v4 *a)
 {
     return ((float *)a);
