@@ -146,6 +146,11 @@ VM_API VM_INLINE float vm_invsqrt(float number)
 #pragma warning(pop)
 #endif
 
+VM_API VM_INLINE float vm_sqrtf(float x)
+{
+    return (x * vm_invsqrt(x));
+}
+
 VM_API VM_INLINE float vm_power(float base, int exp)
 {
     float result = 1.0f;
@@ -625,6 +630,12 @@ VM_API VM_INLINE float vm_v3_angle(v3 a, v3 b)
 {
     float dot = vm_v3_dot(vm_v3_normalize(a), vm_v3_normalize(b));
     return (vm_acosf(vm_clampf(dot, -1.0f, 1.0f)));
+}
+
+VM_API VM_INLINE float vm_v3_distance(v3 a, v3 b)
+{
+    v3 d = vm_v3_sub(a, b);
+    return (vm_sqrtf(vm_v3_dot(d, d)));
 }
 
 /* #############################################################################

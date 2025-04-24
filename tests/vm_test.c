@@ -248,6 +248,16 @@ void vm_test_v3_reflect_project_angle(void)
   assert(vm_absf(angle - (3.14159265f / 2.0f)) < 0.004f); /* 90 degrees */
 }
 
+void vm_test_v3_distance(void)
+{
+  v3 a = vm_v3(1.0f, 0.0f, 0.0f);
+  v3 b = vm_v3(0.0f, 1.0f, 0.0f);
+
+  float d = vm_v3_distance(a, b);
+
+  assert(vm_absf(d - 1.41421356f) < 0.001f); /* sqrt(2) */
+}
+
 void vm_test_v4(void)
 {
   v4 a = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -547,6 +557,7 @@ int main(void)
   vm_test_v3();
   vm_test_v3_cross_dot_normalize();
   vm_test_v3_reflect_project_angle();
+  vm_test_v3_distance();
   vm_test_v4();
   vm_test_m4x4();
   vm_test_m4x4_perspective();
