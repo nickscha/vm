@@ -94,6 +94,13 @@ void vm_test_tanf(void)
   assert(vm_absf(vm_tanf(11 * VM_PI / 6) + 0.57735027f) < EPSILON);
 }
 
+void vm_test_acosf(void)
+{
+  assert(vm_absf(vm_acosf(1.0f) - 0.0f) < 0.01f);
+  assert(vm_absf(vm_acosf(0.0f) - 1.5707963f) < 0.01f);
+  assert(vm_absf(vm_acosf(-1.0f) - 3.1415926f) < 0.01f);
+}
+
 void vm_test_v2(void)
 {
   v2 a = {1.0f, 1.0f};
@@ -220,6 +227,25 @@ void vm_test_v3_cross_dot_normalize(void)
   assert(vm_absf(r.x - 1.0f) < epsilon);
   assert(vm_absf(r.y - 0.0f) < epsilon);
   assert(vm_absf(r.z - 0.0f) < epsilon);
+}
+
+void vm_test_v3_reflect_project_angle(void)
+{
+  v3 incident = vm_v3(1.0f, -1.0f, 0.0f);
+  v3 normal = vm_v3(0.0f, 1.0f, 0.0f);
+  v3 reflected = vm_v3_reflect(incident, normal);
+  v3 a = vm_v3(2.0f, 3.0f, 0.0f);
+  v3 b = vm_v3(1.0f, 0.0f, 0.0f);
+  v3 projected = vm_v3_project(a, b);
+  v3 angle_a = vm_v3(1.0f, 0.0f, 0.0f);
+  v3 angle_b = vm_v3(0.0f, 1.0f, 0.0f);
+  float angle = vm_v3_angle(angle_a, angle_b);
+
+  assert(vm_v3_equals(reflected, vm_v3(1.0f, 1.0f, 0.0f)));
+  assert(projected.x == 2.0f);
+  assert(projected.y == 0.0f);
+  assert(projected.z == 0.0f);
+  assert(vm_absf(angle - (3.14159265f / 2.0f)) < 0.004f); /* 90 degrees */
 }
 
 void vm_test_v4(void)
@@ -516,9 +542,11 @@ int main(void)
   vm_test_sinf();
   vm_test_cosf();
   vm_test_tanf();
+  vm_test_acosf();
   vm_test_v2();
   vm_test_v3();
   vm_test_v3_cross_dot_normalize();
+  vm_test_v3_reflect_project_angle();
   vm_test_v4();
   vm_test_m4x4();
   vm_test_m4x4_perspective();

@@ -185,6 +185,37 @@ VM_API VM_INLINE float vm_fmodf(float x, float y)
     return ((-quotient * y) + x);
 }
 
+VM_API VM_INLINE float vm_acosf(float x)
+{
+    int negate;
+    float ret;
+    float inv_sqrt;
+
+    /* Clamp input to domain */
+    if (x >= 1.0f)
+    {
+        return 0.0f;
+    }
+    if (x <= -1.0f)
+    {
+        return 3.14159265f;
+    }
+
+    negate = x < 0.0f ? 1 : 0;
+    x = x < 0.0f ? -x : x;
+
+    /* Polynomial approximation for acos in range [0, 1) */
+    ret = -0.0187293f;
+    ret = ret * x + 0.0742610f;
+    ret = ret * x - 0.2121144f;
+    ret = ret * x + 1.5707288f;
+
+    inv_sqrt = vm_invsqrt(1.0f - x);
+    ret *= inv_sqrt;
+
+    return (negate ? 3.14159265f - ret : ret);
+}
+
 #define VM_LUT_SIZE 256
 #define VM_LUT_MASK (VM_LUT_SIZE - 1)
 
@@ -575,6 +606,25 @@ VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
 VM_API VM_INLINE float vm_v3_length_manhatten(v3 start, v3 end, float unit)
 {
     return ((vm_absf(start.x - end.x) + vm_absf(start.y - end.y) + vm_absf(start.z - end.z)) / (unit == 0.0f ? 1.0f : unit));
+}
+
+VM_API VM_INLINE v3 vm_v3_reflect(v3 incident, v3 normal)
+{
+    float dot = vm_v3_dot(incident, normal);
+    return (vm_v3_sub(incident, vm_v3_mulf(normal, 2.0f * dot)));
+}
+
+VM_API VM_INLINE v3 vm_v3_project(v3 a, v3 b)
+{
+    float dotAB = vm_v3_dot(a, b);
+    float dotBB = vm_v3_dot(b, b);
+    return (vm_v3_mulf(b, dotAB / dotBB));
+}
+
+VM_API VM_INLINE float vm_v3_angle(v3 a, v3 b)
+{
+    float dot = vm_v3_dot(vm_v3_normalize(a), vm_v3_normalize(b));
+    return (vm_acosf(vm_clampf(dot, -1.0f, 1.0f)));
 }
 
 /* #############################################################################
