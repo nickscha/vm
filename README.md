@@ -15,7 +15,7 @@ int main() {
     int width = 800;
     int height = 600;
 
-    v3 look_at_pos = vm_v3_zero;              /* Where should the camera look at */
+    v3 look_at_pos = vm_v3_zero;                /* Where should the camera look at */
     v3 up = vm_v3(0.0f, 1.0f, 0.0f);            /* World/Camera up */
     v3 cam_position = vm_v3(0.0f, 0.0f, 13.0f); /* Camera set a little bit back */
     float cam_fov = 90.0f;
@@ -43,6 +43,15 @@ int main() {
 
     return 0;
 }
+```
+
+**Note:**
+By default the m4x4 (Matrix 4 x 4) uses a **column major** order for storing data (used by OpenGL).
+If you want to change to a row major order you can use the following define before including the header.
+
+```C
+#define VM_M4X4_ROW_MAJOR_ORDER
+#include "vm.h"
 ```
 
 ## Run Example: nostdlib, freestsanding
