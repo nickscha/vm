@@ -1410,6 +1410,25 @@ VM_API VM_INLINE int vm_frustum_is_cube_in(frustum frustum, v3 center, v3 dimens
     return (1);
 }
 
+VM_API VM_INLINE int vm_frustum_is_sphere_in(frustum frustum, v3 center, float radius)
+{
+    v4 *frustum_data = vm_frustum_data(&frustum);
+
+    int i;
+
+    for (i = 0; i < VM_FRUSTUM_PLANE_SIZE; ++i)
+    {
+        float distance = vm_v3_dot(vm_v3(frustum_data[i].x, frustum_data[i].y, frustum_data[i].z), center) + frustum_data[i].w;
+
+        if (distance < -radius)
+        {
+            return (0); /* Completely outside */
+        }
+    }
+
+    return (1); /* Intersects or inside */
+}
+
 typedef struct transformation
 {
     v3 position;
