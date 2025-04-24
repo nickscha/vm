@@ -449,11 +449,13 @@ void vm_test_m4x4_inverse(void)
 void vm_test_quat(void)
 {
   quat a = {1.0f, 1.0f, 1.0f, 1.0f};
+  quat b = vm_quatf(3.0f);
 
   assert(a.x == 1.0f);
   assert(a.y == 1.0f);
   assert(a.z == 1.0f);
   assert(a.w == 1.0f);
+  assert(vm_quat_equals(b, vm_quat(3.0f, 3.0f, 3.0f, 3.0f)));
   assert(vm_quat_data(&a)[0] == 1.0f);
   assert(vm_quat_data(&a)[1] == 1.0f);
   assert(vm_quat_data(&a)[2] == 1.0f);

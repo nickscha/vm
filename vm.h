@@ -1092,9 +1092,26 @@ VM_API VM_INLINE quat vm_quat(float x, float y, float z, float w)
     return (result);
 }
 
+VM_API VM_INLINE quat vm_quatf(float c)
+{
+    quat result;
+
+    result.x = c;
+    result.y = c;
+    result.z = c;
+    result.w = c;
+
+    return (result);
+}
+
 VM_API VM_INLINE float *vm_quat_data(quat *a)
 {
     return ((float *)a);
+}
+
+VM_API VM_INLINE int vm_quat_equals(quat a, quat b)
+{
+    return (((a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w)) ? 1 : 0);
 }
 
 VM_API VM_INLINE quat vm_quat_rotate(v3 axis, float angle)
