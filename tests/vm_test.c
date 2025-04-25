@@ -101,6 +101,286 @@ void vm_test_acosf(void)
   assert(vm_absf(vm_acosf(-1.0f) - 3.1415926f) < 0.01f);
 }
 
+void vm_test_powf(void)
+{
+  /* Test positive exponent */
+  float base = 2.0f;
+  float exp = 3;
+  float expected = 8.0f; /* 2^3 = 8 */
+  float actual = vm_powf(base, exp);
+  assert(vm_absf(actual - expected) < 0.1f);
+
+  /* Test exponent of zero */
+  base = 2.0f;
+  exp = 0;
+  expected = 1.0f; /* 2^0 = 1 */
+  actual = vm_powf(base, exp);
+  assert(vm_absf(actual - expected) < 0.001f);
+
+  /* Test negative exponent */
+  base = 2.0f;
+  exp = -3;
+  expected = 0.125f; /* 2^(-3) = 1/8 = 0.125 */
+  actual = vm_powf(base, exp);
+  assert(vm_absf(actual - expected) < 0.001f);
+
+  /* Test base 1, should always return 1 */
+  base = 1.0f;
+  exp = 1000;
+  expected = 1.0f; /* 1^1000 = 1 */
+  actual = vm_powf(base, exp);
+  assert(vm_absf(actual - expected) < 0.001f);
+
+  /* Test base 0 with positive exponent */
+  base = 0.0f;
+  exp = 5;
+  expected = 0.0f; /* 0^5 = 0 */
+  actual = vm_powf(base, exp);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_sine(void)
+{
+  float t = 0.5f;
+  float expected = 1.0f - vm_cosf((t * VM_PI) / 2.0f);
+  float actual = vm_ease_in_sine(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_sine(void)
+{
+  float t = 0.5f;
+  float expected = vm_sinf((t * VM_PI) / 2.0f);
+  float actual = vm_ease_out_sine(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_sine(void)
+{
+  float t = 0.5f;
+  float expected = -0.5f * (vm_cosf(VM_PI * t) - 1.0f);
+  float actual = vm_ease_in_out_sine(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_quad(void)
+{
+  float t = 0.5f;
+  float expected = t * t;
+  float actual = vm_ease_in_quad(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_quad(void)
+{
+  float t = 0.5f;
+  float expected = t * (2.0f - t);
+  float actual = vm_ease_out_quad(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_quad(void)
+{
+  float t = 0.5f;
+  float expected = t < 0.5f ? 2.0f * t * t : -1.0f + (4.0f - 2.0f * t) * t;
+  float actual = vm_ease_in_out_quad(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_cubic(void)
+{
+  float t = 0.5f;
+  float expected = t * t * t;
+  float actual = vm_ease_in_cubic(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_cubic(void)
+{
+  float t = 0.5f;
+  float x = t - 1.0f;
+  float expected = x * x * x + 1.0f;
+  float actual = vm_ease_out_cubic(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_cubic(void)
+{
+  float t = 0.5f;
+  float expected = t < 0.5f ? 4.0f * t * t * t : 4.0f * (t - 1.0f) * (t - 1.0f) * (t - 1.0f) + 1.0f;
+  float actual = vm_ease_in_out_cubic(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_quart(void)
+{
+  float t = 0.5f;
+  float expected = t * t * t * t;
+  float actual = vm_ease_in_quart(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_quart(void)
+{
+  float t = 0.5f;
+  float x = t - 1.0f;
+  float expected = 1.0f - x * x * x * x;
+  float actual = vm_ease_out_quart(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_quart(void)
+{
+  float t = 0.5f;
+  float expected = t < 0.5f ? 8.0f * t * t * t * t : 1.0f - 8.0f * (t - 1.0f) * (t - 1.0f) * (t - 1.0f) * (t - 1.0f);
+  float actual = vm_ease_in_out_quart(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_quint(void)
+{
+  float t = 0.5f;
+  float expected = t * t * t * t * t;
+  float actual = vm_ease_in_quint(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_quint(void)
+{
+  float t = 0.5f;
+  float x = t - 1.0f;
+  float expected = x * x * x * x * x + 1.0f;
+  float actual = vm_ease_out_quint(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_quint(void)
+{
+  float t = 0.5f;
+  float expected = t < 0.5f ? 16.0f * t * t * t * t * t : 16.0f * (t - 1.0f) * (t - 1.0f) * (t - 1.0f) * (t - 1.0f) * (t - 1.0f) + 1.0f;
+  float actual = vm_ease_in_out_quint(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_expo(void)
+{
+  float t = 0.5f;
+  float expected = vm_powf(2.0f, 10.0f * (t - 1.0f));
+  float actual = vm_ease_in_expo(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_expo(void)
+{
+  float t = 0.5f;
+  float expected = 1.0f - vm_powf(2.0f, -10.0f * t);
+  float actual = vm_ease_out_expo(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_expo(void)
+{
+  float t = 0.5f;
+  float expected = 0.5f * vm_powf(2.0f, 20.0f * t - 10.0f);
+  float actual = vm_ease_in_out_expo(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_circ(void)
+{
+  float t = 0.5f;
+  float expected = 1.0f - vm_sqrtf(1.0f - t * t);
+  float actual = vm_ease_in_circ(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_circ(void)
+{
+  float t = 0.5f;
+  float x = t - 1.0f;
+  float expected = vm_sqrtf(1.0f - x * x);
+  float actual = vm_ease_out_circ(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_circ(void)
+{
+  float t = 0.5f;
+  float expected = 0.5f * (1.0f - vm_sqrtf(1.0f - 4.0f * t * t));
+  float actual = vm_ease_in_out_circ(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_back(void)
+{
+  float t = 0.5f;
+  float expected = t * t * ((VM_EASE_BACK_C1 + 1.0f) * t - VM_EASE_BACK_C1);
+  float actual = vm_ease_in_back(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_back(void)
+{
+  float t = 0.5f;
+  float x = t - 1.0f;
+  float expected = x * x * ((VM_EASE_BACK_C1 + 1.0f) * x + VM_EASE_BACK_C1) + 1.0f;
+  float actual = vm_ease_out_back(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_back(void)
+{
+  float t = 0.5f;
+  float x = t * 2.0f;
+  float expected = 0.5f * (x * x * ((VM_EASE_BACK_C2 + 1.0f) * x - VM_EASE_BACK_C2));
+  float actual = vm_ease_In_out_back(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_bounce(void)
+{
+  float t = 0.5f;
+  float expected = 1.0f - vm_ease_out_bounce(1.0f - t);
+  float actual = vm_ease_in_bounce(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_out_bounce(void)
+{
+  float t = 0.5f;
+  float expected;
+  float actual;
+  if (t < (1.0f / 2.75f))
+  {
+    expected = 7.5625f * t * t;
+  }
+  else if (t < (2.0f / 2.75f))
+  {
+    t -= 1.5f / 2.75f;
+    expected = 7.5625f * t * t + 0.75f;
+  }
+  else if (t < (2.5f / 2.75f))
+  {
+    t -= 2.25f / 2.75f;
+    expected = 7.5625f * t * t + 0.9375f;
+  }
+  else
+  {
+    t -= 2.625f / 2.75f;
+    expected = 7.5625f * t * t + 0.984375f;
+  }
+  actual = vm_ease_out_bounce(0.5f);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_ease_in_out_bounce(void)
+{
+  float t = 0.5f;
+  float expected = 0.5f * vm_ease_out_bounce(0.0f) + 0.5f;
+  float actual = vm_ease_in_out_bounce(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
 void vm_test_v2(void)
 {
   v2 a = {1.0f, 1.0f};
@@ -553,6 +833,31 @@ int main(void)
   vm_test_cosf();
   vm_test_tanf();
   vm_test_acosf();
+  vm_test_powf();
+  vm_test_ease_in_sine();
+  vm_test_ease_out_sine();
+  vm_test_ease_in_out_sine();
+  vm_test_ease_in_quad();
+  vm_test_ease_out_quad();
+  vm_test_ease_in_out_quad();
+  vm_test_ease_in_cubic();
+  vm_test_ease_out_cubic();
+  vm_test_ease_in_out_cubic();
+  vm_test_ease_in_quart();
+  vm_test_ease_out_quart();
+  vm_test_ease_in_out_quart();
+  vm_test_ease_in_quint();
+  vm_test_ease_out_quint();
+  vm_test_ease_in_out_quint();
+  vm_test_ease_in_expo();
+  vm_test_ease_out_expo();
+  vm_test_ease_in_out_expo();
+  vm_test_ease_in_circ();
+  vm_test_ease_out_circ();
+  vm_test_ease_in_out_circ();
+  vm_test_ease_in_back();
+  vm_test_ease_out_back();
+  vm_test_ease_in_out_back();
   vm_test_v2();
   vm_test_v3();
   vm_test_v3_cross_dot_normalize();
