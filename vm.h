@@ -107,6 +107,32 @@ VM_API VM_INLINE float vm_clampf(float value, float min, float max)
     return (vm_maxf(min, vm_minf(max, value)));
 }
 
+VM_API VM_INLINE float vm_smoothstep(float x)
+{
+    if (x <= 0.0f)
+    {
+        return (0.0f);
+    }
+    if (x >= 1.0f)
+    {
+        return (1.0f);
+    }
+    return ((3.0f * x * x) - (2.0f * x * x * x));
+}
+
+VM_API VM_INLINE float vm_smootherstep(float x)
+{
+    if (x <= 0.0f)
+    {
+        return (0.0f);
+    }
+    if (x >= 1.0f)
+    {
+        return (1.0f);
+    }
+    return ((10.0f * x * x * x) - (15.0f * x * x * x * x) + (6.0f * x * x * x * x * x));
+}
+
 VM_API VM_INLINE float vm_floorf(float x)
 {
     int i = (int)x;

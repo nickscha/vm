@@ -139,6 +139,50 @@ void vm_test_powf(void)
   assert(vm_absf(actual - expected) < 0.001f);
 }
 
+void vm_test_smoothstep(void)
+{
+  float t = 0.5f;
+  float expected = (3.0f * t * t) - (2.0f * t * t * t);
+  float actual = vm_smoothstep(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_smootherstep(void)
+{
+  float t = 0.5f;
+  float expected = (10.0f * t * t * t) - (15.0f * t * t * t * t) + (6.0f * t * t * t * t * t);
+  float actual = vm_smootherstep(t);
+  assert(vm_absf(actual - expected) < 0.001f);
+}
+
+void vm_test_smoothstep_edge_cases(void)
+{
+  float t1 = 0.0f;
+  float expected1 = 0.0f;
+  float actual1 = vm_smoothstep(t1);
+
+  float t2 = 1.0f;
+  float expected2 = 1.0f;
+  float actual2 = vm_smoothstep(t2);
+
+  assert(vm_absf(actual1 - expected1) < 0.001f);
+  assert(vm_absf(actual2 - expected2) < 0.001f);
+}
+
+void vm_test_smootherstep_edge_cases(void)
+{
+  float t1 = 0.0f;
+  float expected1 = 0.0f;
+  float actual1 = vm_smootherstep(t1);
+
+  float t2 = 1.0f;
+  float expected2 = 1.0f;
+  float actual2 = vm_smootherstep(t2);
+
+  assert(vm_absf(actual1 - expected1) < 0.001f);
+  assert(vm_absf(actual2 - expected2) < 0.001f);
+}
+
 void vm_test_ease_in_sine(void)
 {
   float t = 0.5f;
@@ -834,6 +878,10 @@ int main(void)
   vm_test_tanf();
   vm_test_acosf();
   vm_test_powf();
+  vm_test_smoothstep();
+  vm_test_smootherstep();
+  vm_test_smoothstep_edge_cases();
+  vm_test_smootherstep_edge_cases();
   vm_test_ease_in_sine();
   vm_test_ease_out_sine();
   vm_test_ease_in_out_sine();
