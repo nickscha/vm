@@ -107,6 +107,11 @@ VM_API VM_INLINE float vm_clampf(float value, float min, float max)
     return (vm_maxf(min, vm_minf(max, value)));
 }
 
+VM_API VM_INLINE float vm_clamp1f(float value)
+{
+    return (vm_maxf(0.0f, vm_minf(1.0f, value)));
+}
+
 VM_API VM_INLINE float vm_smoothstep(float x)
 {
     if (x <= 0.0f)
