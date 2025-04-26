@@ -107,7 +107,7 @@ VM_API VM_INLINE float vm_clampf(float value, float min, float max)
     return (vm_maxf(min, vm_minf(max, value)));
 }
 
-VM_API VM_INLINE float vm_clamp1f(float value)
+VM_API VM_INLINE float vm_clamp01f(float value)
 {
     return (vm_maxf(0.0f, vm_minf(1.0f, value)));
 }
@@ -505,7 +505,7 @@ VM_API VM_INLINE float vm_ease_out_back(float t)
     return (t * t * ((VM_EASE_BACK_C1 + 1.0f) * t + VM_EASE_BACK_C1) + 1.0f);
 }
 
-VM_API VM_INLINE float vm_ease_In_out_back(float t)
+VM_API VM_INLINE float vm_ease_in_out_back(float t)
 {
     if (t < 0.5f)
     {

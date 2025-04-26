@@ -377,7 +377,7 @@ void vm_test_ease_in_out_back(void)
   float t = 0.5f;
   float x = t * 2.0f;
   float expected = 0.5f * (x * x * ((VM_EASE_BACK_C2 + 1.0f) * x - VM_EASE_BACK_C2));
-  float actual = vm_ease_In_out_back(t);
+  float actual = vm_ease_in_out_back(t);
   assert(vm_absf(actual - expected) < 0.001f);
 }
 
