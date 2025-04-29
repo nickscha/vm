@@ -46,7 +46,7 @@ int main() {
 ```
 
 **Note:**
-By default the m4x4 (Matrix 4 x 4) uses a **column major** order for storing data (used by OpenGL).
+By default the m4x4 (Matrix 4x4) uses a **column major** order for storing data (used by OpenGL).
 If you want to change to a row major order you can use the following define before including the header.
 
 ```C
