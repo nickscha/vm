@@ -33,7 +33,7 @@ int main() {
     v3 cube1_dimensions = vm_v3_one; /* No Scaling */
 
     v3 cube2_position = vm_v3(100.0f, 0.0f, 0.0f); /* Cube is set far away to the left */
-    v3 cube2_dimensions = vm_v3_one;             /* No Scaling */
+    v3 cube2_dimensions = vm_v3_one;               /* No Scaling */
 
     /* The cube is rendered inside the camera frustum */
     assert(vm_frustum_is_cube_in(frustum_planes, cube1_position, cube1_dimensions, 0.15f));
