@@ -1619,11 +1619,11 @@ VM_API VM_INLINE v3 vm_v3_rotate(v3 a, quat rotation)
 
     quat conjugate = vm_quat_conjugate(rotation);
     quat w = vm_quat_mulv3(rotation, a);
-    w = vm_quat_mul(w, conjugate);
+    quat rotated = vm_quat_mul(conjugate, w);
 
-    result.x = w.x;
-    result.y = w.y;
-    result.z = w.z;
+    result.x = rotated.x;
+    result.y = rotated.y;
+    result.z = rotated.z;
 
     return (result);
 }
