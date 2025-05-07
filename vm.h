@@ -715,6 +715,11 @@ VM_API VM_INLINE v2 vm_v2_divf(v2 a, float b)
     return (result);
 }
 
+VM_API VM_INLINE float vm_v2_length(v2 a)
+{
+    return (vm_sqrtf(a.x * a.x + a.y * a.y));
+}
+
 VM_API VM_INLINE float vm_v2_length_manhatten(v2 start, v2 end, float unit)
 {
     return ((vm_absf(start.x - end.x) + vm_absf(start.y - end.y)) / (unit == 0.0f ? 1.0f : unit));
@@ -890,6 +895,11 @@ VM_API VM_INLINE v3 vm_v3_normalize(v3 a)
     result.z = a.z * scalar;
 
     return (result);
+}
+
+VM_API VM_INLINE float vm_v3_length(v3 a)
+{
+    return (vm_sqrtf(a.x * a.x + a.y * a.y + a.z * a.z));
 }
 
 VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
@@ -1083,6 +1093,11 @@ VM_API VM_INLINE v4 vm_v4_divf(v4 a, float b)
 VM_API VM_INLINE float vm_v4_dot(v4 v1, v4 v2)
 {
     return ((v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w));
+}
+
+VM_API VM_INLINE float vm_v4_length(v4 a)
+{
+    return (vm_sqrtf(a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w));
 }
 
 /* #############################################################################
