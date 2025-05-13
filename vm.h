@@ -731,6 +731,14 @@ VM_API VM_INLINE float vm_v2_length_manhatten(v2 start, v2 end, float unit)
  */
 #define VM_V3_ELEMENT_COUNT 3
 
+#ifdef VM_LEFT_HAND_LAYOUT
+#define VM_FORWARD 1.0f
+#define VM_BACKWARD -1.0f
+#else
+#define VM_FORWARD -1.0f /* OpenGL layout */
+#define VM_BACKWARD 1.0f /* OpenGL layout */
+#endif
+
 typedef struct v3
 {
     float x;
@@ -740,8 +748,8 @@ typedef struct v3
 
 static const v3 vm_v3_zero = {0.0f, 0.0f, 0.0f};
 static const v3 vm_v3_one = {1.0f, 1.0f, 1.0f};
-static const v3 vm_v3_forward = {0.0f, 0.0f, 1.0f};
-static const v3 vm_v3_back = {0.0f, 0.0f, -1.0f};
+static const v3 vm_v3_forward = {0.0f, 0.0f, VM_FORWARD};
+static const v3 vm_v3_back = {0.0f, 0.0f, VM_BACKWARD};
 static const v3 vm_v3_up = {0.0f, 1.0f, 0.0f};
 static const v3 vm_v3_down = {0.0f, -1.0f, 0.0f};
 static const v3 vm_v3_left = {-1.0f, 0.0f, 0.0};
@@ -1588,24 +1596,88 @@ VM_API VM_INLINE quat vm_quat_add(quat a, quat b)
     return (result);
 }
 
-VM_API VM_INLINE m4x4 vm_quat_to_rotation_matrix(quat a)
+VM_API VM_INLINE m4x4 vm_quat_to_rotation_matrix(quat q)
 {
-    v3 forward = vm_v3(
-        2.0f * (a.x * a.z - a.w * a.y),
-        2.0f * (a.y * a.z + a.w * a.x),
-        1.0f - 2.0f * (a.x * a.x + a.y * a.y));
+    float xx = q.x * q.x;
+    float yy = q.y * q.y;
+    float zz = q.z * q.z;
+    float xy = q.x * q.y;
+    float xz = q.x * q.z;
+    float yz = q.y * q.z;
+    float wx = q.w * q.x;
+    float wy = q.w * q.y;
+    float wz = q.w * q.z;
 
-    v3 up = vm_v3(
-        2.0f * (a.x * a.y + a.w * a.z),
-        1.0f - 2.0f * (a.x * a.x + a.z * a.z),
-        2.0f * (a.y * a.z - a.w * a.x));
+    m4x4 result = vm_m4x4_identity;
 
-    v3 right = vm_v3(
-        1.0f - 2.0f * (a.y * a.y + a.z * a.z),
-        2.0f * (a.x * a.y - a.w * a.z),
-        2.0f * (a.x * a.z + a.w * a.y));
+    result.e[VM_M4X4_AT(0, 0)] = 1.0f - 2.0f * (yy + zz);
+    result.e[VM_M4X4_AT(1, 1)] = 1.0f - 2.0f * (xx + zz);
+    result.e[VM_M4X4_AT(2, 2)] = 1.0f - 2.0f * (xx + yy);
 
-    return (vm_m4x4_rotation(forward, up, right));
+    result.e[VM_M4X4_AT(0, 1)] = 2.0f * (xy + wz);
+    result.e[VM_M4X4_AT(1, 0)] = 2.0f * (xy - wz);
+
+#ifdef VM_LEFT_HAND_LAYOUT
+    result.e[VM_M4X4_AT(0, 2)] = 2.0f * (xz - wy);
+    result.e[VM_M4X4_AT(1, 2)] = 2.0f * (yz + wx);
+    result.e[VM_M4X4_AT(2, 0)] = 2.0f * (xz + wy);
+    result.e[VM_M4X4_AT(2, 1)] = 2.0f * (yz - wx);
+#else
+    /* Right-handed (OpenGL) */
+    result.e[VM_M4X4_AT(0, 2)] = -2.0f * (xz - wy);
+    result.e[VM_M4X4_AT(1, 2)] = -2.0f * (yz + wx);
+    result.e[VM_M4X4_AT(2, 0)] = -2.0f * (xz + wy);
+    result.e[VM_M4X4_AT(2, 1)] = -2.0f * (yz - wx);
+#endif
+
+    return (result);
+}
+
+VM_API VM_INLINE quat vm_quat_look_rotation(v3 from, v3 to)
+{
+    v3 start_dir = vm_v3_normalize(from);
+    v3 end_dir = vm_v3_normalize(to);
+
+    float dot = vm_v3_dot(start_dir, end_dir);
+    v3 axis;
+    float s;
+    float invs;
+    quat q;
+
+    if (dot > 0.9999f)
+    {
+        return vm_quat_rot;
+    }
+
+    if (dot < -0.9999f)
+    {
+        v3 orthogonal = vm_v3_cross(vm_v3_up, start_dir);
+        float length_squared = (orthogonal.x * orthogonal.x) + (orthogonal.y * orthogonal.y) + (orthogonal.z * orthogonal.z);
+        quat q;
+
+        if (length_squared < 1e-6f)
+        {
+            orthogonal = vm_v3_cross(vm_v3_up, start_dir);
+        }
+        orthogonal = vm_v3_normalize(orthogonal);
+
+        q.x = orthogonal.x;
+        q.y = orthogonal.y;
+        q.z = orthogonal.z;
+        q.w = 0.0f;
+        return q;
+    }
+
+    axis = vm_v3_cross(start_dir, end_dir);
+    s = vm_sqrtf((1 + dot) * 2.0f);
+    invs = 1.0f / s;
+
+    q.x = axis.x * invs;
+    q.y = axis.y * invs;
+    q.z = axis.z * invs;
+    q.w = s * 0.5f;
+
+    return (vm_quat_normalize(q));
 }
 
 VM_API VM_INLINE float vm_quat_dot(quat a, quat b)
@@ -1619,7 +1691,7 @@ VM_API VM_INLINE v3 vm_v3_rotate(v3 a, quat rotation)
 
     quat conjugate = vm_quat_conjugate(rotation);
     quat w = vm_quat_mulv3(rotation, a);
-    quat rotated = vm_quat_mul(conjugate, w);
+    quat rotated = vm_quat_mul(w, conjugate);
 
     result.x = rotated.x;
     result.y = rotated.y;
@@ -1887,6 +1959,21 @@ VM_API VM_INLINE m4x4 vm_transformation_matrix(transformation *t)
 VM_API VM_INLINE void vm_tranformation_rotate(transformation *t, v3 axis, float angle)
 {
     t->rotation = vm_quat_rotate(axis, angle);
+}
+
+VM_API VM_INLINE v3 vm_transformation_forward(transformation *t)
+{
+    return vm_v3_rotate(vm_v3_forward, t->rotation);
+}
+
+VM_API VM_INLINE v3 vm_transformation_right(transformation *t)
+{
+    return vm_v3_rotate(vm_v3_right, t->rotation);
+}
+
+VM_API VM_INLINE v3 vm_transformation_up(transformation *t)
+{
+    return vm_v3_rotate(vm_v3_up, t->rotation);
 }
 
 #endif /* VM_H */
