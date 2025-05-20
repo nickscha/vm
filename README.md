@@ -45,12 +45,22 @@ int main() {
 }
 ```
 
-**Note:**
+### Switch Row/Column major layout
 By default the m4x4 (Matrix 4x4) uses a **column major** order for storing data (used by OpenGL).
 If you want to change to a row major order you can use the following define before including the header.
 
 ```C
 #define VM_M4X4_ROW_MAJOR_ORDER
+#include "vm.h"
+```
+
+### Switch Coordinate orientation
+
+By default a right hand layout (like OpenGL uses) is used.
+You can switch the layout to lefthand like this:
+
+```C
+#define VM_LEFT_HAND_LAYOUT
 #include "vm.h"
 ```
 
