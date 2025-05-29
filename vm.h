@@ -1726,7 +1726,7 @@ typedef struct transformation
 
 } transformation;
 
-VM_API VM_INLINE transformation vm_tranformation_init(void)
+VM_API VM_INLINE transformation vm_transformation_init(void)
 {
     transformation result = {0};
     result.position = vm_v3_zero;
