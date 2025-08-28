@@ -10,6 +10,7 @@ LICENSE
   See end of file for detailed license information.
 
 */
+#define VM_USE_SSE
 #include "../vm.h"
 
 #include "test.h" /* Simple Testing framework */

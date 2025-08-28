@@ -45,6 +45,16 @@ int main() {
 }
 ```
 
+### Enable SIMD (SSE)
+
+By default explicit SIMD (SSE) is disabled.
+If your environment supports SSE you can either use the compile flag `-DVM_USE_SSE` or define it before including the header.
+
+```C
+#define VM_USE_SSE
+#include "vm.h"
+```
+
 ### Switch Row/Column major layout
 By default the m4x4 (Matrix 4x4) uses a **column major** order for storing data (used by OpenGL).
 If you want to change to a row major order you can use the following define before including the header.

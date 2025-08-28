@@ -38,6 +38,15 @@ LICENSE
 #define VM_ALIGN_16
 #endif
 
+/* If we are on a platform that does not use SSE we undefine VM_USE_SSE if accidently enabled by the user */
+#if defined(VM_USE_SSE) && !(defined(__x86_64__) || defined(__i386__))
+#undef VM_USE_SSE
+#endif
+
+#ifdef VM_USE_SSE
+#include <xmmintrin.h>
+#endif
+
 /* #############################################################################
  * # COMMON MATH FUNCTIONS
  * #############################################################################
@@ -154,6 +163,23 @@ VM_API VM_INLINE float vm_floorf(float x)
 #endif
 VM_API VM_INLINE float vm_invsqrt(float number)
 {
+#ifdef VM_USE_SSE
+    __m128 half = _mm_set_ss(0.5f);
+    __m128 three = _mm_set_ss(1.5f);
+    __m128 x = _mm_set_ss(number);
+
+    /* First approximation using RSQRTSS */
+    __m128 y = _mm_rsqrt_ss(x);
+
+    /* One iteration of Newton-Raphson refinement:
+       y = y * (1.5 - 0.5 * x * y * y) */
+    __m128 y2 = _mm_mul_ss(y, y);
+    __m128 xhalf = _mm_mul_ss(x, half);
+    __m128 sub = _mm_sub_ss(three, _mm_mul_ss(xhalf, y2));
+    y = _mm_mul_ss(y, sub);
+
+    return _mm_cvtss_f32(y);
+#else
     union
     {
         float f;
@@ -170,6 +196,7 @@ VM_API VM_INLINE float vm_invsqrt(float number)
     y = y * (threehalfs - (x2 * y * y)); /* One iteration of Newton's method */
 
     return (y);
+#endif
 }
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -582,6 +609,14 @@ VM_API VM_INLINE int vm_v3_equals(v3 a, v3 b)
 
 VM_API VM_INLINE v3 vm_v3_add(v3 a, v3 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_add_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x + b.x;
@@ -589,10 +624,19 @@ VM_API VM_INLINE v3 vm_v3_add(v3 a, v3 b)
     result.z = a.z + b.z;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_addf(v3 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_add_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x + b;
@@ -600,10 +644,19 @@ VM_API VM_INLINE v3 vm_v3_addf(v3 a, float b)
     result.z = a.z + b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_sub(v3 a, v3 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_sub_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x - b.x;
@@ -611,10 +664,19 @@ VM_API VM_INLINE v3 vm_v3_sub(v3 a, v3 b)
     result.z = a.z - b.z;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_subf(v3 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_sub_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x - b;
@@ -622,10 +684,19 @@ VM_API VM_INLINE v3 vm_v3_subf(v3 a, float b)
     result.z = a.z - b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_mul(v3 a, v3 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_mul_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x * b.x;
@@ -633,10 +704,19 @@ VM_API VM_INLINE v3 vm_v3_mul(v3 a, v3 b)
     result.z = a.z * b.z;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_mulf(v3 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_mul_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x * b;
@@ -644,10 +724,19 @@ VM_API VM_INLINE v3 vm_v3_mulf(v3 a, float b)
     result.z = a.z * b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_div(v3 a, v3 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_div_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x / b.x;
@@ -655,10 +744,19 @@ VM_API VM_INLINE v3 vm_v3_div(v3 a, v3 b)
     result.z = a.z / b.z;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_divf(v3 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_div_ps(a_vec, b_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = a.x / b;
@@ -666,6 +764,7 @@ VM_API VM_INLINE v3 vm_v3_divf(v3 a, float b)
     result.z = a.z / b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_cross(v3 a, v3 b)
@@ -681,7 +780,22 @@ VM_API VM_INLINE v3 vm_v3_cross(v3 a, v3 b)
 
 VM_API VM_INLINE float vm_v3_dot(v3 a, v3 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 mul = _mm_mul_ps(a_vec, b_vec);
+    __m128 shuf = _mm_shuffle_ps(mul, mul, _MM_SHUFFLE(2, 3, 0, 1));
+    __m128 sum = _mm_add_ss(mul, shuf);
+
+    float result;
+
+    shuf = _mm_shuffle_ps(sum, sum, _MM_SHUFFLE(0, 0, 0, 2));
+    sum = _mm_add_ss(sum, shuf);
+    _mm_store_ss(&result, sum);
+    return result;
+#else
     return ((a.x * b.x) + (a.y * b.y) + (a.z * b.z));
+#endif
 }
 
 VM_API VM_INLINE v3 vm_v3_normalize(v3 a)
@@ -705,6 +819,17 @@ VM_API VM_INLINE float vm_v3_length(v3 a)
 
 VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 t_vec = _mm_set1_ps(t);
+    __m128 sub_vec = _mm_sub_ps(b_vec, a_vec);
+    __m128 mul_vec = _mm_mul_ps(sub_vec, t_vec);
+    __m128 result_vec = _mm_add_ps(mul_vec, a_vec);
+    v3 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v3 result;
 
     result.x = ((b.x - a.x) * t) + a.x;
@@ -712,6 +837,7 @@ VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
     result.z = ((b.z - a.z) * t) + a.z;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE float vm_v3_length_manhatten(v3 start, v3 end, float unit)
@@ -797,6 +923,14 @@ VM_API VM_INLINE int vm_v4_equals(v4 a, v4 b)
 
 VM_API VM_INLINE v4 vm_v4_add(v4 a, v4 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_add_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x + b.x;
@@ -805,10 +939,19 @@ VM_API VM_INLINE v4 vm_v4_add(v4 a, v4 b)
     result.w = a.w + b.w;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_addf(v4 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_add_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x + b;
@@ -817,10 +960,19 @@ VM_API VM_INLINE v4 vm_v4_addf(v4 a, float b)
     result.w = a.w + b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_sub(v4 a, v4 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_sub_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x - b.x;
@@ -829,10 +981,19 @@ VM_API VM_INLINE v4 vm_v4_sub(v4 a, v4 b)
     result.w = a.w - b.w;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_subf(v4 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_sub_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x - b;
@@ -841,10 +1002,19 @@ VM_API VM_INLINE v4 vm_v4_subf(v4 a, float b)
     result.w = a.w - b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_mul(v4 a, v4 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_mul_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x * b.x;
@@ -853,10 +1023,19 @@ VM_API VM_INLINE v4 vm_v4_mul(v4 a, v4 b)
     result.w = a.w * b.w;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_mulf(v4 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_mul_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x * b;
@@ -865,10 +1044,19 @@ VM_API VM_INLINE v4 vm_v4_mulf(v4 a, float b)
     result.w = a.w * b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_div(v4 a, v4 b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_loadu_ps((float *)&b);
+    __m128 result_vec = _mm_div_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x / b.x;
@@ -877,10 +1065,19 @@ VM_API VM_INLINE v4 vm_v4_div(v4 a, v4 b)
     result.w = a.w / b.w;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE v4 vm_v4_divf(v4 a, float b)
 {
+#ifdef VM_USE_SSE
+    __m128 a_vec = _mm_loadu_ps((float *)&a);
+    __m128 b_vec = _mm_set1_ps(b);
+    __m128 result_vec = _mm_div_ps(a_vec, b_vec);
+    v4 result;
+    _mm_storeu_ps((float *)&result, result_vec);
+    return result;
+#else
     v4 result;
 
     result.x = a.x / b;
@@ -889,6 +1086,7 @@ VM_API VM_INLINE v4 vm_v4_divf(v4 a, float b)
     result.w = a.w / b;
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE float vm_v4_dot(v4 v1, v4 v2)
@@ -932,6 +1130,61 @@ static const m4x4 vm_m4x4_identity =
 
 VM_API VM_INLINE m4x4 vm_m4x4_mul(m4x4 a, m4x4 b)
 {
+#ifdef VM_USE_SSE
+#ifdef VM_M4X4_ROW_MAJOR_ORDER
+    m4x4 result;
+    int i;
+    for (i = 0; i < 4; ++i)
+    {
+        float *ar = &a.e[VM_M4X4_AT(i, 0)];
+        __m128 arow = _mm_loadu_ps(ar); /* a0 a1 a2 a3 */
+
+        __m128 brow0 = _mm_loadu_ps(&b.e[VM_M4X4_AT(0, 0)]);
+        __m128 brow1 = _mm_loadu_ps(&b.e[VM_M4X4_AT(1, 0)]);
+        __m128 brow2 = _mm_loadu_ps(&b.e[VM_M4X4_AT(2, 0)]);
+        __m128 brow3 = _mm_loadu_ps(&b.e[VM_M4X4_AT(3, 0)]);
+
+        /* broadcast each scalar from arow and multiply-add */
+        __m128 t0 = _mm_mul_ps(_mm_shuffle_ps(arow, arow, _MM_SHUFFLE(0, 0, 0, 0)), brow0);
+        __m128 t1 = _mm_mul_ps(_mm_shuffle_ps(arow, arow, _MM_SHUFFLE(1, 1, 1, 1)), brow1);
+        __m128 t2 = _mm_mul_ps(_mm_shuffle_ps(arow, arow, _MM_SHUFFLE(2, 2, 2, 2)), brow2);
+        __m128 t3 = _mm_mul_ps(_mm_shuffle_ps(arow, arow, _MM_SHUFFLE(3, 3, 3, 3)), brow3);
+
+        __m128 sum01 = _mm_add_ps(t0, t1);
+        __m128 sum23 = _mm_add_ps(t2, t3);
+        __m128 sum = _mm_add_ps(sum01, sum23);
+
+        _mm_storeu_ps(&result.e[VM_M4X4_AT(i, 0)], sum);
+    }
+    return result;
+#else
+    m4x4 result;
+    int j;
+    for (j = 0; j < 4; ++j)
+    {
+        float *bc = &b.e[VM_M4X4_AT(0, j)]; /* contiguous column */
+        __m128 bcol = _mm_loadu_ps(bc);     /* b0 b1 b2 b3 - elements of column j */
+
+        __m128 acol0 = _mm_loadu_ps(&a.e[VM_M4X4_AT(0, 0)]); /* column 0 */
+        __m128 acol1 = _mm_loadu_ps(&a.e[VM_M4X4_AT(0, 1)]); /* column 1 */
+        __m128 acol2 = _mm_loadu_ps(&a.e[VM_M4X4_AT(0, 2)]); /* column 2 */
+        __m128 acol3 = _mm_loadu_ps(&a.e[VM_M4X4_AT(0, 3)]); /* column 3 */
+
+        /* broadcast each scalar from bcol and multiply-add */
+        __m128 t0 = _mm_mul_ps(_mm_shuffle_ps(bcol, bcol, _MM_SHUFFLE(0, 0, 0, 0)), acol0);
+        __m128 t1 = _mm_mul_ps(_mm_shuffle_ps(bcol, bcol, _MM_SHUFFLE(1, 1, 1, 1)), acol1);
+        __m128 t2 = _mm_mul_ps(_mm_shuffle_ps(bcol, bcol, _MM_SHUFFLE(2, 2, 2, 2)), acol2);
+        __m128 t3 = _mm_mul_ps(_mm_shuffle_ps(bcol, bcol, _MM_SHUFFLE(3, 3, 3, 3)), acol3);
+
+        __m128 sum01 = _mm_add_ps(t0, t1);
+        __m128 sum23 = _mm_add_ps(t2, t3);
+        __m128 sum = _mm_add_ps(sum01, sum23);
+
+        _mm_storeu_ps(&result.e[VM_M4X4_AT(0, j)], sum);
+    }
+    return result;
+#endif
+#else
     m4x4 result;
 
     int i = 0;
@@ -949,10 +1202,26 @@ VM_API VM_INLINE m4x4 vm_m4x4_mul(m4x4 a, m4x4 b)
     }
 
     return (result);
+#endif
 }
 
 VM_API VM_INLINE int vm_m4x4_equals(m4x4 a, m4x4 b)
 {
+#ifdef VM_USE_SSE
+    int i;
+    for (i = 0; i < 4; ++i)
+    {
+        __m128 va = _mm_loadu_ps(&a.e[i * 4]);
+        __m128 vb = _mm_loadu_ps(&b.e[i * 4]);
+        __m128 cmp = _mm_cmpeq_ps(va, vb);
+        int mask = _mm_movemask_ps(cmp);
+        if ((mask & 0xF) != 0xF)
+        {
+            return 0;
+        }
+    }
+    return 1;
+#else
     return (
         a.e[VM_M4X4_AT(0, 0)] == b.e[VM_M4X4_AT(0, 0)] &&
         a.e[VM_M4X4_AT(0, 1)] == b.e[VM_M4X4_AT(0, 1)] &&
@@ -973,6 +1242,7 @@ VM_API VM_INLINE int vm_m4x4_equals(m4x4 a, m4x4 b)
         a.e[VM_M4X4_AT(3, 1)] == b.e[VM_M4X4_AT(3, 1)] &&
         a.e[VM_M4X4_AT(3, 2)] == b.e[VM_M4X4_AT(3, 2)] &&
         a.e[VM_M4X4_AT(3, 3)] == b.e[VM_M4X4_AT(3, 3)]);
+#endif
 }
 
 VM_API VM_INLINE m4x4 vm_m4x4_perspective(float fov, float aspectRatio, float zNear, float zFar)
