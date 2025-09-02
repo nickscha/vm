@@ -1673,24 +1673,30 @@ VM_API VM_INLINE m4x4 vm_quat_to_rotation_matrix(quat q)
 
     m4x4 result = vm_m4x4_identity;
 
-    result.e[VM_M4X4_AT(0, 0)] = 1.0f - 2.0f * (yy + zz);
-    result.e[VM_M4X4_AT(1, 1)] = 1.0f - 2.0f * (xx + zz);
-    result.e[VM_M4X4_AT(2, 2)] = 1.0f - 2.0f * (xx + yy);
-
-    result.e[VM_M4X4_AT(0, 1)] = 2.0f * (xy + wz);
-    result.e[VM_M4X4_AT(1, 0)] = 2.0f * (xy - wz);
-
 #ifdef VM_LEFT_HAND_LAYOUT
+    result.e[VM_M4X4_AT(0, 0)] = 1.0f - 2.0f * (yy + zz);
+    result.e[VM_M4X4_AT(0, 1)] = 2.0f * (xy + wz);
     result.e[VM_M4X4_AT(0, 2)] = 2.0f * (xz - wy);
+
+    result.e[VM_M4X4_AT(1, 0)] = 2.0f * (xy - wz);
+    result.e[VM_M4X4_AT(1, 1)] = 1.0f - 2.0f * (xx + zz);
     result.e[VM_M4X4_AT(1, 2)] = 2.0f * (yz + wx);
+
     result.e[VM_M4X4_AT(2, 0)] = 2.0f * (xz + wy);
     result.e[VM_M4X4_AT(2, 1)] = 2.0f * (yz - wx);
+    result.e[VM_M4X4_AT(2, 2)] = 1.0f - 2.0f * (xx + yy);
 #else
-    /* Right-handed (OpenGL) */
-    result.e[VM_M4X4_AT(0, 2)] = -2.0f * (xz - wy);
-    result.e[VM_M4X4_AT(1, 2)] = -2.0f * (yz + wx);
-    result.e[VM_M4X4_AT(2, 0)] = -2.0f * (xz + wy);
-    result.e[VM_M4X4_AT(2, 1)] = -2.0f * (yz - wx);
+    result.e[VM_M4X4_AT(0, 0)] = 1.0f - 2.0f * (yy + zz);
+    result.e[VM_M4X4_AT(0, 1)] = 2.0f * (xy - wz);
+    result.e[VM_M4X4_AT(0, 2)] = 2.0f * (xz + wy);
+
+    result.e[VM_M4X4_AT(1, 0)] = 2.0f * (xy + wz);
+    result.e[VM_M4X4_AT(1, 1)] = 1.0f - 2.0f * (xx + zz);
+    result.e[VM_M4X4_AT(1, 2)] = 2.0f * (yz - wx);
+
+    result.e[VM_M4X4_AT(2, 0)] = 2.0f * (xz - wy);
+    result.e[VM_M4X4_AT(2, 1)] = 2.0f * (yz + wx);
+    result.e[VM_M4X4_AT(2, 2)] = 1.0f - 2.0f * (xx + yy);
 #endif
 
     return (result);
@@ -1742,6 +1748,45 @@ VM_API VM_INLINE quat vm_quat_look_rotation(v3 from, v3 to)
 
     return (vm_quat_normalize(q));
 }
+
+VM_API VM_INLINE m4x4 vm_m4x4_from_to_scaled(v3 start, v3 end, float scale_x, float scale_y)
+{
+  v3 dir = vm_v3_sub(end, start);
+  float dist = vm_v3_length(dir);
+
+  v3 up;
+  quat rot;
+  m4x4 rotation_matrix;
+  m4x4 scale_matrix;
+  v3 midpoint;
+  m4x4 translation_matrix;
+
+  if (dist < 1e-6f)
+  {
+    m4x4 result = vm_m4x4_identity;
+    result.e[VM_M4X4_AT(0, 0)] = 0;
+    result.e[VM_M4X4_AT(1, 1)] = 0;
+    result.e[VM_M4X4_AT(2, 2)] = 0;
+    return result;
+  }
+
+  dir = vm_v3_normalize(dir);
+
+  up = vm_v3(0.0f, 1.0f, 0.0f);
+  rot = vm_quat_look_rotation(up, dir);
+  rotation_matrix = vm_quat_to_rotation_matrix(rot);
+
+  scale_matrix = vm_m4x4_identity;
+  scale_matrix.e[VM_M4X4_AT(0, 0)] = scale_x;
+  scale_matrix.e[VM_M4X4_AT(1, 1)] = dist;
+  scale_matrix.e[VM_M4X4_AT(2, 2)] = scale_y;
+
+  midpoint = vm_v3_mulf(vm_v3_add(start, end), 0.5f);
+  translation_matrix = vm_m4x4_translate(vm_m4x4_identity, midpoint);
+
+  return vm_m4x4_mul(translation_matrix, vm_m4x4_mul(rotation_matrix, scale_matrix));
+}
+
 
 VM_API VM_INLINE float vm_quat_dot(quat a, quat b)
 {
