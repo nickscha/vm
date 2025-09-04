@@ -671,6 +671,17 @@ void vm_test_transformation(void)
 {
 }
 
+void vm_test_slerp(void)
+{
+  v3 a = {1.0f, 0.0f, 0.0f};
+  v3 b = {0.0f, 1.0f, 0.0f};
+  v3 r = vm_v3_slerp(a, b, 0.5f);
+
+  assert_equalsf(r.x, 0.7071f, EPSILON);
+  assert_equalsf(r.y, 0.7071f, EPSILON);
+  assert_equalsf(r.z, 0.0f, EPSILON);
+}
+
 int main(void)
 {
 
@@ -702,6 +713,7 @@ int main(void)
   vm_test_quat();
   vm_test_frustum();
   vm_test_transformation();
+  vm_test_slerp();
 
   return 0;
 }
