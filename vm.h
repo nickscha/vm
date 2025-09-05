@@ -819,6 +819,15 @@ VM_API VM_INLINE float vm_v3_length(v3 a)
 
 VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
 {
+    if (t <= 0.0f)
+    {
+        return a;
+    }
+    else if (t >= 1.0f)
+    {
+        return b;
+    }
+
 #ifdef VM_USE_SSE
     __m128 a_vec = _mm_loadu_ps((float *)&a);
     __m128 b_vec = _mm_loadu_ps((float *)&b);
