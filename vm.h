@@ -840,34 +840,6 @@ VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
 #endif
 }
 
-VM_API VM_INLINE v3 vm_v3_slerp(v3 a, v3 b, float t)
-{
-    float dot;
-    float sign;
-    v3 lerped;
-
-    a = vm_v3_normalize(a);
-    b = vm_v3_normalize(b);
-
-    dot = vm_v3_dot(a, b);
-
-    /* If dot < 0, invert one vector for shortest path */
-    sign = 1.0f;
-
-    if (dot < 0.0f)
-    {
-        dot = -dot;
-        sign = -1.0f;
-        b = vm_v3_mulf(b, sign);
-    }
-
-    /* Linear interpolation */
-    lerped = vm_v3_add(vm_v3_mulf(a, 1.0f - t), vm_v3_mulf(b, t));
-    lerped = vm_v3_normalize(lerped);
-
-    return lerped;
-}
-
 VM_API VM_INLINE float vm_v3_length_manhatten(v3 start, v3 end, float unit)
 {
     return ((vm_absf(start.x - end.x) + vm_absf(start.y - end.y) + vm_absf(start.z - end.z)) / (unit == 0.0f ? 1.0f : unit));
