@@ -61,9 +61,8 @@ int _fltused = 0;
     Simple win32 print function without using the "windows.h" include since it slows
     down build time
 */
-#include "win32_print.h"
-
 #include "../vm.h"
+#include "../deps/pio.h"
 
 #ifdef __clang__
 #elif __GNUC__
@@ -104,7 +103,7 @@ mainCRTStartup(void)
     /* The cube is outside of camer frustum ! */
     assert(!vm_frustum_is_cube_in(frustum_planes, cube2_position, cube2_dimensions, 0.15f));
 
-    win32_printf("[win32][nostdlib] vm example finished\n");
+    pio_print("[win32][nostdlib] vm example finished\n");
 
     return 0;
 }

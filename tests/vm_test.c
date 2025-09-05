@@ -13,7 +13,7 @@ LICENSE
 #define VM_USE_SSE
 #include "../vm.h"
 
-#include "test.h" /* Simple Testing framework */
+#include "../deps/test.h" /* Simple Testing framework */
 
 void vm_test_math(void)
 {
