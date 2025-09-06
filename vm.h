@@ -819,6 +819,8 @@ VM_API VM_INLINE float vm_v3_length(v3 a)
 
 VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
 {
+    v3 result;
+
     if (t <= 0.0f)
     {
         return a;
@@ -835,18 +837,14 @@ VM_API VM_INLINE v3 vm_v3_lerp(v3 a, v3 b, float t)
     __m128 sub_vec = _mm_sub_ps(b_vec, a_vec);
     __m128 mul_vec = _mm_mul_ps(sub_vec, t_vec);
     __m128 result_vec = _mm_add_ps(mul_vec, a_vec);
-    v3 result;
     _mm_storeu_ps((float *)&result, result_vec);
-    return result;
 #else
-    v3 result;
-
     result.x = ((b.x - a.x) * t) + a.x;
     result.y = ((b.y - a.y) * t) + a.y;
     result.z = ((b.z - a.z) * t) + a.z;
+#endif
 
     return (result);
-#endif
 }
 
 VM_API VM_INLINE float vm_v3_length_manhatten(v3 start, v3 end, float unit)
