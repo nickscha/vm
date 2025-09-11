@@ -18,17 +18,15 @@ LICENSE
 /* Check if using C99 or later (inline is supported) */
 #if __STDC_VERSION__ >= 199901L
 #define VM_INLINE inline
-#define VM_API extern
 #elif defined(__GNUC__) || defined(__clang__)
 #define VM_INLINE __inline__
-#define VM_API static
 #elif defined(_MSC_VER)
 #define VM_INLINE __inline
-#define VM_API static
 #else
 #define VM_INLINE
-#define VM_API static
 #endif
+
+#define VM_API static
 
 #if defined(__GNUC__) || defined(__clang__)
 #define VM_ALIGN_16 __attribute__((aligned(16)))
